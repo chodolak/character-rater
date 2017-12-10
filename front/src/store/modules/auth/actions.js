@@ -15,54 +15,39 @@ export const check = ({ commit }) => {
   commit(types.CHECK);
 };
 
-export const register = ({ commit }) => {
-  /*
-   * Normally you would use a proxy to register the user:
-   *
-   * new Proxy()
-   *  .register(payload)
-   *  .then((response) => {
-   *    commit(types.REGISTER, response);
-   *  })
-   *  .catch(() => {
-   *    console.log('Request failed...');
-   *  });
-   */
-  commit(types.LOGIN, 'RandomGeneratedToken');
-  Vue.router.push({
-    name: 'home.index',
+export const register = ({ commit }, user) => {
+  commit(types.INVALID_REGISTER, {});
+  commit(types.LOADING, true);
+
+  const userObj = { name: user.name, email: user.email, password: user.password };
+  new AuthProxy().register(userObj).then((response) => {
+    commit(types.LOGIN, response.token);
+    Vue.router.push({
+      name: 'home.index',
+    });
+  })
+  .catch((response) => {
+    commit(types.INVALID_REGISTER, response.error.errors);
   });
 };
 
 export const login = ({ commit }, user) => {
-  /*
-   * Normally you would use a proxy to log the user in:
-   *
-   */
-  new AuthProxy()
-    .login(user)
-    .then((response) => {
-      commit(types.LOGIN, response.token);
-      // store.dispatch('account/find');
-      Vue.router.push({
-        name: 'home.index',
-      });
-    })
-    .catch(() => {
-      console.log('Request failed...');
+  commit(types.INVALID_LOGIN, false);
+  commit(types.LOADING, true);
+
+  new AuthProxy().login(user).then((response) => {
+    commit(types.LOGIN, response.token);
+    Vue.router.push({
+      name: 'home.index',
     });
-
-  // commit(types.LOGIN, 'RandomGeneratedToken');
-  // store.dispatch('account/find');
-
-  // Vue.router.push({
-  //   name: 'home.index',
-  // });
+  })
+  .catch(() => {
+    commit(types.INVALID_LOGIN, true);
+  });
 };
 
 export const logout = ({ commit }) => {
-  new AuthProxy()
-    .logout();
+  new AuthProxy().logout();
   commit(types.LOGOUT);
   Vue.router.push({
     name: 'login.index',

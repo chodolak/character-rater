@@ -7,4 +7,7 @@
 
 export default {
   authenticated: false,
+  invalidLogin: false,
+  invalidRegister: {},
+  loading: false,
 };

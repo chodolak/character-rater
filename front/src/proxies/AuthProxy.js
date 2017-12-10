@@ -29,7 +29,7 @@ class AuthProxy extends Proxy {
    * @returns {Promise} The result in a promise.
    */
   register(data) {
-    return this.submit('post', `${this.endpoint}/auth/register`, data);
+    return this.submit('post', `${this.endpoint}/auth/signup`, data);
   }
 
   logout() {

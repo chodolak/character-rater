@@ -5,7 +5,10 @@
         Login
       </span>
       <div slot="body">
-        <form @submit.prevent="login(user)">
+        <div class="alert alert-danger" role="alert" v-if="$store.state.auth.invalidLogin">
+          Invalid login
+        </div>
+        <form @submit.prevent="login(user)" ref="loginForm" novalidate>
           <div class="form-group">
             <div class="input-group">
               <div class="input-group-addon">
@@ -13,6 +16,7 @@
               </div>
               <input
                 v-model="user.email"
+                required="true"
                 type="email"
                 placeholder="Email"
                 class="form-control"
@@ -26,6 +30,7 @@
               </div>
               <input
                 v-model="user.password"
+                required="true"
                 type="password"
                 placeholder="Password"
                 class="form-control"
@@ -35,6 +40,7 @@
           <div class="form-group">
             <button class="btn btn-outline-primary">
               Login
+              <i v-if="$store.state.auth.loading" class="fa fa-spinner fa-spin"></i>
             </button>
           </div>
         </form>
@@ -88,7 +94,13 @@
        * @param {Object} user The user to be logged in.
        */
       login(user) {
-        this.$store.dispatch('auth/login', user);
+        const form = this.$refs.loginForm;
+        if (form.checkValidity() !== false) {
+          form.classList.remove('was-validated');
+          this.$store.dispatch('auth/login', user);
+        } else {
+          form.classList.add('was-validated');
+        }
       },
     },
 

@@ -45,7 +45,7 @@ class ResetPasswordControllerTest extends TestCase
 
     public function testResetSuccessfullyWithTokenRelease()
     {
-        Config::set('boilerplate.reset_password.release_token', true);
+        Config::set('chodolak.reset_password.release_token', true);
 
         $this->post('api/auth/reset', [
             'email' => 'test@email.com',

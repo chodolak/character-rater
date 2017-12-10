@@ -23,7 +23,7 @@ class SignUpControllerTest extends TestCase
 
     public function testSignUpSuccessfullyWithTokenRelease()
     {
-        Config::set('boilerplate.sign_up.release_token', true);
+        Config::set('chodolak.sign_up.release_token', true);
 
         $this->post('api/auth/signup', [
             'name' => 'Test User',
