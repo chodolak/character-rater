@@ -1,0 +1,70 @@
+<template>
+  <v-layout>
+    <div class="card">
+      <img class="card-img-top center-block" src="../../assets/images/05uT89S.jpg" alt="Card image cap">
+      <div class="card-body">
+        <h2 class="card-title text-center">Character Name</h2>
+        <div class="center-block">
+          <fa-rating :glyph="rating.star" :active-color="rating.activeColor" :inactive-color="rating.inactiveColor" :increment="rating.increment" :show-rating="false" v-model="rating.value"></fa-rating>
+        </div>
+      </div>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item">
+          <h6>Bio</h6>
+          This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.
+        </li>
+        <li class="list-group-item">
+          <h6>Series</h6>
+          Cras justo odio
+        </li>
+      </ul>
+    </div>
+    <i class="fa fa-arrow-left" aria-hidden="true"></i>
+    <i class="fa fa-arrow-right" aria-hidden="true"></i>
+  </v-layout>
+</template>
+
+<script>
+  /* ============
+   * Rate Index Page
+   * ============
+   *
+   * The rate index page.
+   */
+  import VLayout from '@/layouts/Default';
+  import { FaRating } from 'vue-rate-it';
+
+  export default {
+    /**
+     * The name of the page.
+     */
+    name: 'rate-index',
+
+    data() {
+      return {
+        rating: {
+          activeColor: '#0860A3',
+          inactiveColor: '#ffffff',
+          star: 'M1728 647q0 22-26 48l-363 354 86 500q1 7 1 20 0 21-10.5 35.5t-30.5 14.5q-19 0-40-12l-449-236-449 236q-22 12-40 12-21 0-31.5-14.5t-10.5-35.5q0-6 2-20l86-500-364-354q-25-27-25-48 0-37 56-46l502-73 225-455q19-41 49-41t49 41l225 455 502 73q56 9 56 46z',
+          increment: 0.5,
+          value: null,
+        },
+      };
+    },
+
+    /**
+     * The methods the page can use.
+     */
+    methods: {
+
+    },
+
+    /**
+     * The components that the page can use.
+     */
+    components: {
+      VLayout,
+      FaRating,
+    },
+  };
+</script>

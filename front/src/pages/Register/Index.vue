@@ -83,7 +83,7 @@
             </div>
           </div>
           <div class="form-group">
-            <button class="btn btn-outline-primary">
+            <button class="btn custom-button">
               Register
               <i v-if="$store.state.auth.loading" class="fa fa-spinner fa-spin"></i>
             </button>

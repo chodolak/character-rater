@@ -1,7 +1,7 @@
 <template>
-  <div class="card">
+  <div class="card" >
     <h4
-      :class="classNamesHeader"
+      class="card-header complimentary-color text-white"
       v-if="hasSlot('header')"
     >
       <slot name="header"></slot>
@@ -59,25 +59,25 @@
     /**
      * The computed properties that the component can use.
      */
-    computed: {
-      /**
-       * Computed property which will compute the classes
-       * for the header of the card.
-       *
-       * @returns {Array} The classes for the header.
-       */
-      classNamesHeader() {
-        const classNames = ['card-header'];
+    // computed: {
+    //   /**
+    //    * Computed property which will compute the classes
+    //    * for the header of the card.
+    //    *
+    //    * @returns {Array} The classes for the header.
+    //    */
+    //   classNamesHeader() {
+    //     const classNames = ['card-header'];
 
-        if (this.contextualStyle) {
-          classNames.push(`bg-${this.contextualStyle}`);
-          classNames.push('text-white');
-        } else {
-          classNames.push('bg-default');
-        }
+    //     if (this.contextualStyle) {
+    //       classNames.push(`bg-${this.contextualStyle}`);
+    //       classNames.push('text-white');
+    //     } else {
+    //       classNames.push('bg-default');
+    //     }
 
-        return classNames;
-      },
-    },
+    //     return classNames;
+    //   },
+    // },
   };
 </script>

@@ -1,11 +1,11 @@
 <template>
   <div>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav class="navbar navbar-expand-lg navbar-dark">
       <router-link
         class="navbar-brand"
         :to="{ name: 'home.index' }"
       >
-        Vue 2 Boilerplate
+        Chodolak Anime
       </router-link>
 
       <button
@@ -22,14 +22,14 @@
       >
         <ul class="navbar-nav mr-auto">
           <router-link
-            :to="{ name: 'account.index' }"
+            :to="{ name: 'rate.index' }"
             active-class="active"
             class="nav-item"
             tag="li"
             v-if="$store.state.auth.authenticated"
           >
             <a class="nav-link">
-              Account
+              Rate
             </a>
           </router-link>
         </ul>
@@ -45,7 +45,7 @@
         <span class="navbar-text" v-if="!$store.state.auth.authenticated">
           <router-link
             :to="{ name: 'login.index' }"
-            class="btn btn-dark"
+            class="btn btn-dark login-nav"
             tag="a"
           >
               Login

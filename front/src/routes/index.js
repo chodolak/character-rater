@@ -12,7 +12,12 @@ export default [
     name: 'home.index',
     component: () => import('@/pages/Home/Index'),
   },
-
+  // Rate
+  {
+    path: '/rate',
+    name: 'rate.index',
+    component: () => import('@/pages/Rate/Index'),
+  },
   // Account
   {
     path: '/account',

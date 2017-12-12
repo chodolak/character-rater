@@ -1,6 +1,6 @@
 <template>
   <v-layout>
-    <v-card contextual-style="dark">
+    <v-card>
       <span slot="header">
         Welcome!
       </span>

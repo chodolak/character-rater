@@ -8,12 +8,13 @@
 import Vue from 'vue';
 
 /* ============
- * Plugins
- * ============
- *
- * Import and bootstrap the plugins.
- */
+* Plugins
+* ============
+*
+* Import and bootstrap the plugins.
+*/
 
+import VTooltip from 'v-tooltip';
 import './plugins/vuex';
 import './plugins/axios';
 import { i18n } from './plugins/vue-i18n';
@@ -50,6 +51,7 @@ import './assets/stylus/app.styl';
 import App from './App';
 import store from './store';
 
+Vue.use(VTooltip);
 Vue.config.productionTip = false;
 
 store.dispatch('auth/check');
