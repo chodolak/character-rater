@@ -20,7 +20,7 @@
         class="collapse navbar-collapse"
         :class="{ show : menuCollapsed}"
       >
-        <ul class="navbar-nav mr-auto">
+        <ul class="navbar-nav">
           <router-link
             :to="{ name: 'rate.index' }"
             active-class="active"
@@ -30,6 +30,19 @@
           >
             <a class="nav-link">
               Rate
+            </a>
+          </router-link>
+        </ul>
+        <ul class="navbar-nav mr-auto">
+          <router-link
+            :to="{ name: 'admin-character.index' }"
+            active-class="active"
+            class="nav-item"
+            tag="li"
+            v-if="$store.state.auth.admin"
+          >
+            <a class="nav-link">
+              Character
             </a>
           </router-link>
         </ul>

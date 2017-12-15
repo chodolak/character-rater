@@ -6,8 +6,9 @@
  */
 
 export default {
-  authenticated: false,
+  test: false,
   invalidLogin: false,
   invalidRegister: {},
   loading: false,
+  admin: false,
 };

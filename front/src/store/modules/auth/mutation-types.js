@@ -13,6 +13,7 @@ export const LOGOUT = 'LOGOUT';
 export const INVALID_LOGIN = 'INVALID_LOGIN';
 export const INVALID_REGISTER = 'INVALID_REGISTER';
 export const LOADING = 'LOADING';
+export const REFRESH = 'REFRESH';
 
 export default {
   CHECK,
@@ -22,4 +23,5 @@ export default {
   INVALID_LOGIN,
   INVALID_REGISTER,
   LOADING,
+  REFRESH,
 };

@@ -36,6 +36,10 @@ router.beforeEach((to, from, next) => {
     next({
       name: 'home.index',
     });
+  } else if (to.matched.some(m => m.meta.admin) && !store.state.auth.admin) {
+    next({
+      name: 'home.index',
+    });
   } else {
     next();
   }

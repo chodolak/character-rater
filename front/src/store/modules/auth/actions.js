@@ -21,7 +21,7 @@ export const register = ({ commit }, user) => {
 
   const userObj = { name: user.name, email: user.email, password: user.password };
   new AuthProxy().register(userObj).then((response) => {
-    commit(types.LOGIN, response.token);
+    commit(types.LOGIN, response.token, false);
     Vue.router.push({
       name: 'home.index',
     });
@@ -36,7 +36,8 @@ export const login = ({ commit }, user) => {
   commit(types.LOADING, true);
 
   new AuthProxy().login(user).then((response) => {
-    commit(types.LOGIN, response.token);
+    const loginParams = { token: response.token, admin: response.admin };
+    commit(types.LOGIN, loginParams);
     Vue.router.push({
       name: 'home.index',
     });
@@ -54,9 +55,14 @@ export const logout = ({ commit }) => {
   });
 };
 
+export const refresh = ({ commit }, token) => {
+  commit(types.REFRESH, token);
+};
+
 export default {
   check,
   register,
   login,
   logout,
+  refresh,
 };

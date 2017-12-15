@@ -107,7 +107,7 @@
        * @param {Object} user The user to be logged in.
        */
       test() {
-        // this.$store.dispatch('auth/login', user);
+        // // this.$store.dispatch('auth/login', user);
         new AccountProxy()
           .me()
           .then((response) => {
@@ -117,6 +117,7 @@
           .catch(() => {
             console.log('Request failed...');
           });
+        // console.log(this.$store.state.auth.admin);
       },
     },
 
