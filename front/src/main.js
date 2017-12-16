@@ -16,6 +16,7 @@ import Vue from 'vue';
 
 import VTooltip from 'v-tooltip';
 import VueNotifications from 'vue-notifications';
+import VeeValidate from 'vee-validate';
 import iziToast from 'izitoast';
 import 'izitoast/dist/css/iziToast.min.css';
 
@@ -67,8 +68,9 @@ const options = {
   warn: toast,
 };
 
-Vue.use(VTooltip);
 Vue.use(VueNotifications, options);
+Vue.use(VeeValidate);
+Vue.use(VTooltip);
 Vue.config.productionTip = false;
 
 store.dispatch('auth/check');

@@ -27,14 +27,17 @@
   "dependencies": {
     "axios": "^0.16.2",
     "bootstrap": "4.0.0-beta",
+    "debounce": "^1.1.0",
     "font-awesome": "^4.7.0",
     "izitoast": "^1.2.0",
     "v-tooltip": "^2.0.0-rc.25",
+    "vee-validate": "^2.0.0-rc.27",
     "vue": "^2.4.2",
     "vue-i18n": "^7.2.0",
     "vue-notifications": "^0.9.0",
     "vue-rate-it": "^2.1.0",
     "vue-router": "^2.7.0",
+    "vue-select": "github:sagalbot/vue-select",
     "vuex": "^2.4.0",
     "vuex-router-sync": "^4.2.0"
   },

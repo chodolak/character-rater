@@ -31,10 +31,12 @@
               </div>
               <input
                 v-model="user.name"
-                required="true"
+                v-validate="'required'"
                 type="text"
                 placeholder="Username"
                 class="form-control"
+                name="username"
+                :class="{'input': true, 'is-invalid': errors.has('username') }"
               >
             </div>
           </div>
@@ -45,10 +47,12 @@
               </div>
               <input
                 v-model="user.email"
-                required="true"
+                v-validate="'required'"
                 type="email"
                 placeholder="Email"
                 class="form-control"
+                name="email"
+                :class="{'input': true, 'is-invalid': errors.has('email') }"
               >
             </div>
           </div>
@@ -59,11 +63,12 @@
               </div>
               <input
                 v-model="user.password"
-                required="true"
+                v-validate="'required'"
                 type="password"
                 placeholder="Password"
                 class="form-control"
-                v-on:keyup="passwordChecker()"
+                name="password"
+                :class="{'input': true, 'is-invalid': errors.has('password') }"
               >
             </div>
           </div>
@@ -74,11 +79,13 @@
               </div>
               <input
                 v-model="user.passwordConfirm"
-                required="true"
+                v-validate="'required|confirmed:password'"
                 type="password"
                 placeholder="Confirm password"
                 class="form-control"
-                v-on:keyup="passwordChecker()"
+                name="confirm_password"
+                data-vv-as="password"
+                :class="{'input': true, 'is-invalid': errors.has('confirm_password') }"
               >
             </div>
           </div>
@@ -179,20 +186,11 @@
        * @param {Object} user The user to be registered.
        */
       register(user) {
-        this.checkedValidation = true;
-        const form = this.$refs.registerForm;
-        if (user.password !== user.passwordConfirm) {
-          this.passwordValid = false;
-          form.classList.remove('was-validated');
-          return;
-        }
-        this.passwordValid = true;
-        if (form.checkValidity() !== false) {
-          form.classList.remove('was-validated');
-          this.$store.dispatch('auth/register', user);
-        } else {
-          form.classList.add('was-validated');
-        }
+        this.$validator.validateAll().then((result) => {
+          if (result) {
+            this.$store.dispatch('auth/register', user);
+          }
+        });
       },
 
       /**

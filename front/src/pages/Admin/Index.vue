@@ -15,6 +15,16 @@
             </button>
           </a>
         </router-link>
+        <router-link
+          :to="{ name: 'admin-show.index' }"
+          tag="div"
+        >
+          <a class="nav-link">
+            <button class="btn custom-button">
+              Show Upload
+            </button>
+          </a>
+        </router-link>
       </div>
     </v-card>
   </v-layout>

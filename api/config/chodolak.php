@@ -52,12 +52,18 @@ return [
     ],
 
     'character_upload' => [
-        // here you can specify some validation rules for your login request
         'validation_rules' => [
             'name' => 'required',
             'show' => 'required',
-            'data' => 'required',
-            'fileName' => 'required|alpha_num',
+            'image' => 'required',
+            'fileName' => 'required',
+            'bio' => 'required',
+        ]
+    ],
+
+    'show' => [
+        'validation_rules' => [
+            'name' => 'required',
             'bio' => 'required',
         ]
     ],

@@ -38,6 +38,16 @@ export default [
       admin: true,
     },
   },
+  {
+    path: '/admin/show',
+    name: 'admin-show.index',
+    component: () => import('@/pages/Admin/Show/Index'),
+
+    // If the user needs to be admin to view this page.
+    meta: {
+      admin: true,
+    },
+  },
   // Account
   {
     path: '/account',

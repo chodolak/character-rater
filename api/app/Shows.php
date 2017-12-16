@@ -4,12 +4,12 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Character extends Model
+class Shows extends Model
 {
-    /**
+     /**
      * The table associated with the model.
      *
      * @var string
      */
-    protected $table = 'characters';
+    protected $table = 'shows';
 }

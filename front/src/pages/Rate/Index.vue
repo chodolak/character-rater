@@ -1,6 +1,7 @@
 <template>
   <v-layout>
-    <div class="card">
+    <div class="card" style="height:650px;" v-if="!character.name"></div>
+    <div class="card" v-if="character.name">
       <img class="card-img-top center-block"  v-if="character.image" :src="character.image" alt="Card image cap">
       <div class="card-body">
         <h2 class="card-title text-center">{{character.name}}</h2>
@@ -15,7 +16,7 @@
         </li>
         <li class="list-group-item">
           <h6>Show</h6>
-          {{character.show}}
+          {{character.show.name}}
         </li>
       </ul>
     </div>

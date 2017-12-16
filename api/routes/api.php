@@ -20,6 +20,7 @@ $api->version('v1', function (Router $api) {
 
     $api->group(['prefix' => 'admin'], function(Router $api) {
         $api->post('character/upload', 'App\\Api\\V1\\Controllers\\AdminController@upload');
+        $api->post('show', 'App\\Api\\V1\\Controllers\\AdminController@createShow');
     });
 
     $api->group(['middleware' => 'jwt.auth'], function(Router $api) {
@@ -38,6 +39,7 @@ $api->version('v1', function (Router $api) {
             }
         ]);
     });
+    $api->get('shows/{name}', 'App\\Api\\V1\\Controllers\\ShowController@get');
     $api->get('character', 'App\\Api\\V1\\Controllers\\CharacterController@get');
     $api->get('hello', function() {
         return response()->json([

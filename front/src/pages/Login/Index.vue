@@ -16,10 +16,12 @@
               </div>
               <input
                 v-model="user.email"
-                required="true"
+                v-validate="'required'"
                 type="email"
                 placeholder="Email"
                 class="form-control"
+                name="email"
+                :class="{'input': true, 'is-invalid': errors.has('email') }"
               >
             </div>
           </div>
@@ -30,10 +32,12 @@
               </div>
               <input
                 v-model="user.password"
-                required="true"
+                v-validate="'required'"
                 type="password"
                 placeholder="Password"
                 class="form-control"
+                name="password"
+                :class="{'input': true, 'is-invalid': errors.has('password') }"
               >
             </div>
           </div>
@@ -94,13 +98,11 @@
        * @param {Object} user The user to be logged in.
        */
       login(user) {
-        const form = this.$refs.loginForm;
-        if (form.checkValidity() !== false) {
-          form.classList.remove('was-validated');
-          this.$store.dispatch('auth/login', user);
-        } else {
-          form.classList.add('was-validated');
-        }
+        this.$validator.validateAll().then((result) => {
+          if (result) {
+            this.$store.dispatch('auth/login', user);
+          }
+        });
       },
     },
 

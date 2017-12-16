@@ -18,6 +18,7 @@ class CharacterProxy extends Proxy {
    * @returns {Promise} The result in a promise.
    */
   upload(data) {
+    data.show = data.show.value;
     return this.submit('post', `${this.endpoint}/admin/character/upload`, data);
   }
 

@@ -8,8 +8,10 @@ use App\Http\Controllers\Controller;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use App\Api\V1\Requests\CharacterUploadRequest;
+use App\Api\V1\Requests\ShowRequest;
 use Auth;
-use App\Character;
+use App\Characters;
+use App\Shows;
 use Intervention\Image\ImageManagerStatic as Image;
 use Illuminate\Support\Facades\DB;
 
@@ -33,18 +35,34 @@ class AdminController extends Controller
      */
     public function upload(CharacterUploadRequest $request)
     {
-        $imageData = $request->get('data');
+        $imageData = $request->get('image');
         $fileName = $request->get('fileName') . '.' . explode('/', explode(':', substr($imageData, 0, strpos($imageData, ';')))[1])[1];
-        Image::make($request->get('data'))->save(public_path('images/characters/').$fileName);
+        Image::make($request->get('image'))->save(public_path('images/characters/').$fileName);
         $fileUrl = '/images/characters/'.$fileName;
 
-        $character = new Character;
+        $character = new Characters;
         $character->name = $request->get('name');
-        $character->show = $request->get('show');
+        $character->show_id = $request->get('show');
         $character->image = $fileUrl;
         $character->bio = $request->get('bio');
         $character->save();
 
-        return response()->json(['path'=> $fileUrl]);
+        return response()->json($character);
+    }
+
+    public function createShow(ShowRequest $request) 
+    {
+        $imageData = $request->get('image');
+        $fileName = $request->get('fileName') . '.' . explode('/', explode(':', substr($imageData, 0, strpos($imageData, ';')))[1])[1];
+        Image::make($request->get('image'))->save(public_path('images/shows/').$fileName);
+        $fileUrl = '/images/characters/'.$fileName;
+
+        $show = new Shows;
+        $show->name = $request->get('name');
+        $show->bio = $request->get('bio');
+        $show->image = $fileUrl;
+        $show->save();
+
+        return response()->json($show);
     }
 }
