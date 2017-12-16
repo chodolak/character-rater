@@ -11,7 +11,7 @@ return [
 
         // here you can specify some validation rules for your sign-in request
         'validation_rules' => [
-            'name' => 'required||alpha_num|unique:users,name',
+            'name' => 'required|alpha_num|unique:users,name',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|min:6'
         ]
@@ -49,6 +49,17 @@ return [
             'email' => 'required|email',
             'password' => 'required|confirmed'
         ]
-    ]
+    ],
+
+    'character_upload' => [
+        // here you can specify some validation rules for your login request
+        'validation_rules' => [
+            'name' => 'required',
+            'show' => 'required',
+            'data' => 'required',
+            'fileName' => 'required|alpha_num',
+            'bio' => 'required',
+        ]
+    ],
 
 ];

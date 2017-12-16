@@ -15,6 +15,10 @@ import Vue from 'vue';
 */
 
 import VTooltip from 'v-tooltip';
+import VueNotifications from 'vue-notifications';
+import iziToast from 'izitoast';
+import 'izitoast/dist/css/iziToast.min.css';
+
 import './plugins/vuex';
 import './plugins/axios';
 import { i18n } from './plugins/vue-i18n';
@@ -51,7 +55,20 @@ import './assets/stylus/app.styl';
 import App from './App';
 import store from './store';
 
+function toast({ title, message, type, timeout }) {
+  if (type === VueNotifications.types.warn) type = 'warning';
+  return iziToast[type]({ title, message, timeout });
+}
+
+const options = {
+  success: toast,
+  error: toast,
+  info: toast,
+  warn: toast,
+};
+
 Vue.use(VTooltip);
+Vue.use(VueNotifications, options);
 Vue.config.productionTip = false;
 
 store.dispatch('auth/check');

@@ -35,14 +35,14 @@
         </ul>
         <ul class="navbar-nav mr-auto">
           <router-link
-            :to="{ name: 'admin-character.index' }"
+            :to="{ name: 'admin.index' }"
             active-class="active"
             class="nav-item"
             tag="li"
             v-if="$store.state.auth.admin"
           >
             <a class="nav-link">
-              Character
+              Admin
             </a>
           </router-link>
         </ul>

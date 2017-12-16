@@ -1,9 +1,9 @@
 <template>
   <v-layout>
     <div class="card">
-      <img class="card-img-top center-block" src="../../assets/images/05uT89S.jpg" alt="Card image cap">
+      <img class="card-img-top center-block"  v-if="character.image" :src="character.image" alt="Card image cap">
       <div class="card-body">
-        <h2 class="card-title text-center">Character Name</h2>
+        <h2 class="card-title text-center">{{character.name}}</h2>
         <div class="center-block">
           <fa-rating :glyph="rating.star" :active-color="rating.activeColor" :inactive-color="rating.inactiveColor" :increment="rating.increment" :show-rating="false" v-model="rating.value"></fa-rating>
         </div>
@@ -11,11 +11,11 @@
       <ul class="list-group list-group-flush">
         <li class="list-group-item">
           <h6>Bio</h6>
-          This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.
+          {{character.bio}}
         </li>
         <li class="list-group-item">
-          <h6>Series</h6>
-          Cras justo odio
+          <h6>Show</h6>
+          {{character.show}}
         </li>
       </ul>
     </div>
@@ -32,6 +32,7 @@
    * The rate index page.
    */
   import VLayout from '@/layouts/Default';
+  import CharacterProxy from '@/proxies/CharacterProxy';
   import { FaRating } from 'vue-rate-it';
 
   export default {
@@ -49,7 +50,20 @@
           increment: 0.5,
           value: null,
         },
+        character: {
+          name: null,
+          image: null,
+          bio: null,
+          show: null,
+        },
       };
+    },
+
+    created() {
+      new CharacterProxy().get().then((response) => {
+        this.character = response;
+        this.character.image = process.env.API_LOCATION.replace('/api', '') + response.image;
+      });
     },
 
     /**

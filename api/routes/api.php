@@ -18,6 +18,10 @@ $api->version('v1', function (Router $api) {
         $api->get('me', 'App\\Api\\V1\\Controllers\\UserController@me');
     });
 
+    $api->group(['prefix' => 'admin'], function(Router $api) {
+        $api->post('character/upload', 'App\\Api\\V1\\Controllers\\AdminController@upload');
+    });
+
     $api->group(['middleware' => 'jwt.auth'], function(Router $api) {
         $api->get('protected', function() {
             return response()->json([
@@ -34,7 +38,7 @@ $api->version('v1', function (Router $api) {
             }
         ]);
     });
-    
+    $api->get('character', 'App\\Api\\V1\\Controllers\\CharacterController@get');
     $api->get('hello', function() {
         return response()->json([
             'message' => 'This is a simple example of item returned by your APIs. Everyone can see it.'

@@ -19,6 +19,16 @@ export default [
     component: () => import('@/pages/Rate/Index'),
   },
   {
+    path: '/admin',
+    name: 'admin.index',
+    component: () => import('@/pages/Admin/Index'),
+
+    // If the user needs to be admin to view this page.
+    meta: {
+      admin: true,
+    },
+  },
+  {
     path: '/admin/character',
     name: 'admin-character.index',
     component: () => import('@/pages/Admin/Character/Index'),
