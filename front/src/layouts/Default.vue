@@ -22,7 +22,7 @@
       >
         <ul class="navbar-nav">
           <router-link
-            :to="{ name: 'rate.index' }"
+            :to="{ name: 'rate.index', params: { show: 'hunter-x-hunter', character: 'gon-freecss' } }"
             active-class="active"
             class="nav-item"
             tag="li"

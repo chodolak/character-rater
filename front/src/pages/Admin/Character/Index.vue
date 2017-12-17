@@ -139,6 +139,7 @@
       upload() {
         this.$validator.validateAll().then((result) => {
           if (result) {
+            this.uploadingCharacter = true;
             new CharacterProxy().upload(this.character).then(() => {
               this.showSuccessMsg();
               this.uploadingCharacter = false;

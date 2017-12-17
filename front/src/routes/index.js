@@ -14,7 +14,7 @@ export default [
   },
   // Rate
   {
-    path: '/rate',
+    path: '/rate/:show/:character',
     name: 'rate.index',
     component: () => import('@/pages/Rate/Index'),
   },

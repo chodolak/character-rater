@@ -27,8 +27,8 @@ class CharacterProxy extends Proxy {
    *
    * @returns {Promise} The result in a promise.
    */
-  get() {
-    return this.submit('get', `${this.endpoint}/character`);
+  get(show, character) {
+    return this.submit('get', `${this.endpoint}/character/${show}/${character}`);
   }
 }
 

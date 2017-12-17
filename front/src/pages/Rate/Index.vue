@@ -16,12 +16,30 @@
         </li>
         <li class="list-group-item">
           <h6>Show</h6>
-          {{character.show.name}}
+          {{character.show}}
         </li>
       </ul>
     </div>
-    <i class="fa fa-arrow-left" aria-hidden="true"></i>
-    <i class="fa fa-arrow-right" aria-hidden="true"></i>
+    <div class="prev-character" v-if="character.prev">
+      <router-link
+            :to="{ name: 'rate.index', params: { show:  character.prev.showUrlSafe, character: character.prev.nameUrlSafe } }"
+            class="btn custom-button"
+            tag="button"
+      >
+        <i class="fa fa-arrow-left" aria-hidden="true"></i>
+        <span>{{character.prev.name}}</span>
+      </router-link>
+    </div>
+    <div class="next-character" v-if="character.next">
+      <router-link
+            :to="{ name: 'rate.index', params: { show:  character.next.showUrlSafe, character: character.next.nameUrlSafe } }"
+            class="btn custom-button"
+            tag="button"
+      >
+          <span>{{character.next.name}}</span>
+          <i class="fa fa-arrow-right" aria-hidden="true"></i>
+      </router-link>
+    </div>
   </v-layout>
 </template>
 
@@ -61,17 +79,25 @@
     },
 
     created() {
-      new CharacterProxy().get().then((response) => {
-        this.character = response;
-        this.character.image = process.env.API_LOCATION.replace('/api', '') + response.image;
-      });
+      this.setUpCharacter(this.$route);
+    },
+
+    beforeRouteUpdate(to, from, next) {
+      this.setUpCharacter(to);
+      next();
     },
 
     /**
      * The methods the page can use.
      */
     methods: {
-
+      setUpCharacter(route) {
+        new CharacterProxy().get(route.params.show, route.params.character)
+          .then((response) => {
+            this.character = response;
+            this.character.image = process.env.API_LOCATION.replace('/api', '') + response.image;
+          });
+      },
     },
 
     /**

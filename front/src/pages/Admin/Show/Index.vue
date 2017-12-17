@@ -133,6 +133,9 @@
             .catch(() => {
               this.uploadingShow = false;
               this.showErrorMsg();
+            })
+            .then(() => {
+              this.errors.clear();
             });
           }
         });
@@ -144,7 +147,6 @@
         this.show.bio = null;
         this.show.fileName = null;
         document.getElementById('show-image').value = '';
-        this.errors.clear();
       },
     },
 
