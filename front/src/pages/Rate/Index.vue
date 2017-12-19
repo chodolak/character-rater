@@ -92,7 +92,7 @@
      */
     methods: {
       setUpCharacter(route) {
-        new CharacterProxy().get(route.params.show, route.params.character)
+        new CharacterProxy().getByShowCharacter(route.params.show, route.params.character)
           .then((response) => {
             this.character = response;
             this.character.image = process.env.API_LOCATION.replace('/api', '') + response.image;

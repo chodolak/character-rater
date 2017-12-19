@@ -2,29 +2,10 @@
   <v-layout>
     <v-card contextual-style="dark">
       <span slot="header">
-        Admin
+        Dashboard
       </span>
       <div slot="body">
-        <router-link
-          :to="{ name: 'admin-character.index' }"
-          tag="div"
-        >
-          <a class="nav-link">
-            <button class="btn custom-button">
-              Character Upload
-            </button>
-          </a>
-        </router-link>
-        <router-link
-          :to="{ name: 'admin-show.index' }"
-          tag="div"
-        >
-          <a class="nav-link">
-            <button class="btn custom-button">
-              Show Upload
-            </button>
-          </a>
-        </router-link>
+        Hey
       </div>
     </v-card>
   </v-layout>
@@ -37,7 +18,7 @@
    *
    * The admin index page.
    */
-  import VLayout from '@/layouts/Default';
+  import VLayout from '@/layouts/Admin';
   import VCard from '@/components/Card';
 
   export default {

@@ -41,7 +41,8 @@ $api->version('v1', function (Router $api) {
     });
 
     $api->get('shows/{name}', 'App\\Api\\V1\\Controllers\\ShowController@get');
-    $api->get('character/{name}', 'App\\Api\\V1\\Controllers\\CharacterController@get');
+    $api->get('characters', 'App\\Api\\V1\\Controllers\\CharacterController@get');
+    $api->get('character/{name}', 'App\\Api\\V1\\Controllers\\CharacterController@getCharacterByName');
     $api->get('character/{show}/{character}', 'App\\Api\\V1\\Controllers\\CharacterController@getCharacterByShow');
 
     $api->get('hello', function() {

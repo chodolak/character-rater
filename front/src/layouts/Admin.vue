@@ -66,26 +66,58 @@
         </span>
       </div>
     </nav>
-    <slot></slot>
+    <div class="page">
+      <div class="page-content d-flex align-items-stretch"> 
+        <!-- Side Navbar -->
+        <nav class="side-navbar">
+          <span class="heading"></span>
+          <ul class="list-unstyled">
+            <router-link
+              :to="{ name: 'admin.index' }"
+              tag="li"
+            >
+              <a> <i class="fa fa-home" aria-hidden="true"></i>Dashboard</a>
+            </router-link>
+            <router-link
+              :to="{ name: 'admin-characters.index' }"
+              active-class="active"
+              tag="li"
+            >
+              <a> <i class="fa fa-user" aria-hidden="true"></i>Characters</a>
+            </router-link>
+            <router-link
+              :to="{ name: 'admin-shows.index' }"
+              active-class="active"
+              tag="li"
+            >
+              <a> <i class="fa fa-folder-open" aria-hidden="true"></i>Shows</a>
+            </router-link>
+          </ul>
+        </nav>
+        <div class="container pt-4">
+          <div class="row">
+            <div class="col col-12">
+              <!-- Content will be placed here -->
+              <slot></slot>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
   /* ============
-   * Minimal Layout
+   * Admin Layout
    * ============
-   *
-   * Used for the register and login pages.
-   *
-   * Layouts are used to store a lot of shared code.
-   * This way the app stays clean.
    */
 
   export default {
     /**
      * The name of the layout.
      */
-    name: 'minimal-layout',
+    name: 'admin-layout',
 
     data() {
       return {

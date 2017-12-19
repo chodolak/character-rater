@@ -5,10 +5,26 @@ namespace App\Api\V1\Controllers;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use App\Http\Controllers\Controller;
 use App\Characters;
+use Illuminate\Http\Request;
 
 class CharacterController extends Controller
-{
-    public function get($name)
+{   
+    public function get(Request $request)
+    {
+        $name = $request->get('name');
+        $show = $request->get('show');
+
+        $char = Characters::with('show');
+        if($name) {
+            $char->where('name', 'LIKE', '%'.$name.'%');
+        }
+        if($show) {
+            $char->where('show_id', '=', $show);
+        }
+        return response()->json($char->paginate(20));
+    }
+
+    public function getCharacterByName($name)
     {
         $name = str_replace('-',' ',$name);
         $char = Characters::with('show')->where('name', 'LIKE', $name)->get();

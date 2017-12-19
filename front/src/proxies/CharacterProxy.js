@@ -22,12 +22,22 @@ class CharacterProxy extends Proxy {
     return this.submit('post', `${this.endpoint}/admin/character/upload`, data);
   }
 
+  get(page, search) {
+    let query = `?page=${page}`;
+    if (search.name) {
+      query += `&name=${search.name}`;
+    }
+    if (search.show) {
+      query += `&show=${search.show}`;
+    }
+    return this.submit('get', `${this.endpoint}/characters${query}`);
+  }
   /**
    * Method used to get a character.
    *
    * @returns {Promise} The result in a promise.
    */
-  get(show, character) {
+  getByShowCharacter(show, character) {
     return this.submit('get', `${this.endpoint}/character/${show}/${character}`);
   }
 }

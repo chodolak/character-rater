@@ -29,9 +29,9 @@ export default [
     },
   },
   {
-    path: '/admin/character',
-    name: 'admin-character.index',
-    component: () => import('@/pages/Admin/Character/Index'),
+    path: '/admin/characters',
+    name: 'admin-characters.index',
+    component: () => import('@/pages/Admin/Characters/Index'),
 
     // If the user needs to be admin to view this page.
     meta: {
@@ -39,9 +39,29 @@ export default [
     },
   },
   {
-    path: '/admin/show',
-    name: 'admin-show.index',
-    component: () => import('@/pages/Admin/Show/Index'),
+    path: '/admin/characters/upload',
+    name: 'admin-characters-upload.index',
+    component: () => import('@/pages/Admin/Characters/Upload/Index'),
+
+    // If the user needs to be admin to view this page.
+    meta: {
+      admin: true,
+    },
+  },
+  {
+    path: '/admin/shows',
+    name: 'admin-shows.index',
+    component: () => import('@/pages/Admin/Shows/Index'),
+
+    // If the user needs to be admin to view this page.
+    meta: {
+      admin: true,
+    },
+  },
+  {
+    path: '/admin/shows/upload',
+    name: 'admin-shows-upload.index',
+    component: () => import('@/pages/Admin/Shows/Upload/Index'),
 
     // If the user needs to be admin to view this page.
     meta: {

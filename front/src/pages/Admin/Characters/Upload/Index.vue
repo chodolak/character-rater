@@ -2,10 +2,10 @@
   <v-layout>
     <v-card contextual-style="dark">
       <span slot="header">
-        Show
+        Character
       </span>
       <div slot="body">
-        <form novalidate @submit.prevent="create()">
+        <form ref="characterForm" novalidate @submit.prevent="upload()">
           <div class="form-group">
             <div class="input-group">
               <input
@@ -14,10 +14,20 @@
                 type="text"
                 placeholder="Name"
                 class="form-control"
-                v-model="show.name"
+                v-model="character.name"
                 :class="{'input': true, 'is-invalid': errors.has('name') }"
               >
             </div>
+          </div>
+          <div class="form-group">
+            <div class="input-group">
+              <v-select data-vv-name="show" v-validate="'required'" v-model="character.show" :options="shows" :on-search="getShows" placeholder="Show">
+                <div slot="no-options">
+                  Search for a show
+                </div>
+              </v-select>
+            </div>
+            <span v-show="errors.has('show')" class="help is-danger">{{ errors.first('show') }}</span>
           </div>
           <div class="form-group">
             <div class="input-group">
@@ -26,7 +36,7 @@
                 rows="2" 
                 id="bio" 
                 placeholder="Bio" 
-                v-model="show.bio"
+                v-model="character.bio"
                 v-validate="'required'"
                 name="bio" 
                 :class="{'input': true, 'is-invalid': errors.has('bio') }"></textarea>
@@ -40,7 +50,7 @@
                 name="fileName"
                 placeholder="File name"
                 class="form-control"
-                v-model="show.fileName"
+                v-model="character.fileName"
                 :class="{'input': true, 'is-invalid': errors.has('fileName') }"
               >
             </div>
@@ -48,7 +58,7 @@
           <div class="form-group">
             <div class="input-group">
               <input 
-                id="show-image" 
+                id="character-image" 
                 type="file" 
                 v-on:change="onFileChange" 
                 class="form-control" 
@@ -60,11 +70,11 @@
           <div class="form-group">
             <button class="btn custom-button">
               Submit
-              <i v-if="uploadingShow" class="fa fa-spinner fa-spin"></i>
+              <i v-if="uploadingCharacter" class="fa fa-spinner fa-spin"></i>
             </button>
           </div>
         </form>
-        <img v-if="show.image" :src="show.image" style="width:50%" class="img-responsive center-block">
+        <img v-if="character.image" :src="character.image" style="width:50%" class="img-responsive center-block">
       </div>
     </v-card>
   </v-layout>
@@ -78,25 +88,30 @@
    * The admin character index page.
    */
   import VueNotifications from 'vue-notifications';
-  import VLayout from '@/layouts/Default';
+  import debounce from 'debounce';
+  import vSelect from 'vue-select';
+  import VLayout from '@/layouts/Admin';
   import VCard from '@/components/Card';
+  import CharacterProxy from '@/proxies/CharacterProxy';
   import ShowProxy from '@/proxies/ShowProxy';
 
   export default {
     /**
      * The name of the page.
      */
-    name: 'admin-shows-index',
+    name: 'admin-characters-upload-index',
 
     data() {
       return {
-        show: {
+        character: {
           image: '',
           name: null,
+          show: null,
           bio: null,
           fileName: null,
         },
-        uploadingShow: false,
+        uploadingCharacter: false,
+        shows: [],
       };
     },
 
@@ -116,22 +131,22 @@
         const reader = new FileReader();
         const vm = this;
         reader.onload = (e) => {
-          vm.show.image = e.target.result;
+          vm.character.image = e.target.result;
         };
         reader.readAsDataURL(file);
       },
 
-      create() {
+      upload() {
         this.$validator.validateAll().then((result) => {
           if (result) {
-            this.uploadingShow = true;
-            new ShowProxy().create(this.show).then(() => {
+            this.uploadingCharacter = true;
+            new CharacterProxy().upload(this.character).then(() => {
               this.showSuccessMsg();
-              this.uploadingShow = false;
-              this.resetShowVariables();
+              this.uploadingCharacter = false;
+              this.resetCharacterVariables();
             })
             .catch(() => {
-              this.uploadingShow = false;
+              this.uploadingCharacter = false;
               this.showErrorMsg();
             })
             .then(() => {
@@ -141,25 +156,38 @@
         });
       },
 
-      resetShowVariables() {
-        this.show.image = '';
-        this.show.name = null;
-        this.show.bio = null;
-        this.show.fileName = null;
-        document.getElementById('show-image').value = '';
+      resetCharacterVariables() {
+        this.character.image = '';
+        this.character.name = null;
+        this.character.show = null;
+        this.character.bio = null;
+        this.character.fileName = null;
+        document.getElementById('character-image').value = '';
       },
+
+      getShows: debounce(function (search, loading) {
+        loading(true);
+        new ShowProxy().get(search).then((response) => {
+          const options = [];
+          response.forEach((value) => {
+            options.push({ value: value.id, label: value.name });
+          });
+          this.shows = options;
+          loading(false);
+        });
+      }, 500),
     },
 
     notifications: {
       showSuccessMsg: {
         type: VueNotifications.types.success,
         title: 'Success!',
-        message: 'Uploaded show',
+        message: 'Uploaded character',
       },
       showErrorMsg: {
         type: VueNotifications.types.error,
         title: 'Error!',
-        message: 'Failed to upload show',
+        message: 'Failed to upload character',
       },
     },
 
@@ -169,6 +197,7 @@
     components: {
       VLayout,
       VCard,
+      vSelect,
     },
   };
 </script>
