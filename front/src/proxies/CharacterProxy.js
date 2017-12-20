@@ -18,8 +18,13 @@ class CharacterProxy extends Proxy {
    * @returns {Promise} The result in a promise.
    */
   upload(data) {
-    data.show = data.show.value;
-    return this.submit('post', `${this.endpoint}/admin/character/upload`, data);
+    const dataObj = { name: data.name,
+      bio: data.bio,
+      show: data.show.value,
+      fileName: data.fileName,
+      image: data.image };
+
+    return this.submit('post', `${this.endpoint}/admin/character/upload`, dataObj);
   }
 
   get(page, search) {
@@ -32,13 +37,33 @@ class CharacterProxy extends Proxy {
     }
     return this.submit('get', `${this.endpoint}/characters${query}`);
   }
+
+  getById(id) {
+    return this.submit('get', `${this.endpoint}/characters/id/${id}`);
+  }
   /**
    * Method used to get a character.
    *
    * @returns {Promise} The result in a promise.
    */
   getByShowCharacter(show, character) {
-    return this.submit('get', `${this.endpoint}/character/${show}/${character}`);
+    return this.submit('get', `${this.endpoint}/characters/${show}/${character}`);
+  }
+
+  update(id, data, orginalImage) {
+    const dataObj = { name: data.name,
+      bio: data.bio,
+      show: data.show,
+      fileName: data.fileName,
+      image: data.image };
+
+    if (orginalImage) {
+      delete dataObj.image;
+    }
+    if (dataObj.show) {
+      dataObj.show = dataObj.show.value;
+    }
+    return this.submit('put', `${this.endpoint}/admin/character/${id}`, dataObj);
   }
 }
 

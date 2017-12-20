@@ -44,6 +44,7 @@
           <th scope="col">#</th>
           <th scope="col">Name</th>
           <th scope="col">Show</th>
+          <th scope="col"></th>
         </tr>
       </thead>
       <tbody>
@@ -51,6 +52,17 @@
           <th scope="row">{{character.id}}</th>
           <td>{{character.name}}</td>
           <td>{{character.show.name}}</td>
+          <td>
+            <div class="custom-center">
+              <router-link
+                :to="{ name: 'admin-characters-upload.index', params: { id: character.id } }"
+                tag="button"
+                class="btn custom-button"
+              >
+                <i class="fa fa-pencil" aria-hidden="true"></i>
+              </router-link>
+            </div>
+          </td>
         </tr>
       </tbody>
     </table>
@@ -180,7 +192,7 @@
       }, 500),
       getShows: debounce(function (search, loading) {
         loading(true);
-        new ShowProxy().get(search).then((response) => {
+        new ShowProxy().getByName(search).then((response) => {
           const options = [];
           options.push({ value: -1, label: 'None' });
           response.forEach((value) => {

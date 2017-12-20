@@ -5,7 +5,7 @@
         Show
       </span>
       <div slot="body">
-        <form novalidate @submit.prevent="create()">
+        <form novalidate @submit.prevent="handleShowSubmit()">
           <div class="form-group">
             <div class="input-group">
               <input
@@ -97,15 +97,39 @@
           fileName: null,
         },
         uploadingShow: false,
+        existingShow: false,
+        existingShowId: null,
+        originalImage: false,
       };
+    },
+
+    created() {
+      if (this.$route.params.id) {
+        this.existingShowId = this.$route.params.id;
+        this.getShow(this.$route.params.id);
+        this.existingShow = true;
+        this.originalImage = true;
+      }
     },
 
     /**
      * The methods the page can use.
      */
     methods: {
+
+      getShow(id) {
+        new ShowProxy().getById(id).then((response) => {
+          this.show.image = process.env.API_LOCATION.replace('/api', '') + response.image;
+          this.show.name = response.name;
+          this.show.bio = response.bio;
+          const file = response.image.replace('/images/shows/', '');
+          this.show.fileName = file.replace(/\.[^/.]+$/, '');
+        });
+      },
+
       onFileChange(e) {
         const files = e.target.files || e.dataTransfer.files;
+        this.originalImage = false;
         if (!files.length) {
           return;
         }
@@ -121,23 +145,43 @@
         reader.readAsDataURL(file);
       },
 
+      handleShowSubmit() {
+        if (this.existingShow) {
+          this.update();
+        } else {
+          this.create();
+        }
+      },
+
       create() {
         this.$validator.validateAll().then((result) => {
           if (result) {
             this.uploadingShow = true;
             new ShowProxy().create(this.show).then(() => {
-              this.showSuccessMsg();
+              this.showSuccessCreateMsg();
               this.uploadingShow = false;
               this.resetShowVariables();
             })
             .catch(() => {
               this.uploadingShow = false;
-              this.showErrorMsg();
+              this.showCreateErrorMsg();
             })
             .then(() => {
               this.errors.clear();
             });
           }
+        });
+      },
+
+      update() {
+        this.uploadingShow = true;
+        new ShowProxy().update(this.existingShowId, this.show, this.originalImage).then(() => {
+          this.showSuccessUpdateMsg();
+          this.uploadingShow = false;
+        })
+        .catch(() => {
+          this.uploadingShow = false;
+          this.showUpdateErrorMsg();
         });
       },
 
@@ -151,15 +195,25 @@
     },
 
     notifications: {
-      showSuccessMsg: {
+      showSuccessCreateMsg: {
         type: VueNotifications.types.success,
         title: 'Success!',
         message: 'Uploaded show',
       },
-      showErrorMsg: {
+      showSuccessUpdateMsg: {
+        type: VueNotifications.types.success,
+        title: 'Success!',
+        message: 'Updated show',
+      },
+      showCreateErrorMsg: {
         type: VueNotifications.types.error,
         title: 'Error!',
         message: 'Failed to upload show',
+      },
+      showUpdateErrorMsg: {
+        type: VueNotifications.types.error,
+        title: 'Error!',
+        message: 'Failed to update show',
       },
     },
 

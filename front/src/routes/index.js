@@ -39,7 +39,7 @@ export default [
     },
   },
   {
-    path: '/admin/characters/upload',
+    path: '/admin/characters/upload/:id?',
     name: 'admin-characters-upload.index',
     component: () => import('@/pages/Admin/Characters/Upload/Index'),
 
@@ -59,7 +59,7 @@ export default [
     },
   },
   {
-    path: '/admin/shows/upload',
+    path: '/admin/shows/upload/:id?',
     name: 'admin-shows-upload.index',
     component: () => import('@/pages/Admin/Shows/Upload/Index'),
 

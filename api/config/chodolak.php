@@ -65,6 +65,8 @@ return [
         'validation_rules' => [
             'name' => 'required',
             'bio' => 'required',
+            'image' => 'required',
+            'fileName' => 'required',
         ]
     ],
 

@@ -19,8 +19,10 @@ $api->version('v1', function (Router $api) {
     });
 
     $api->group(['prefix' => 'admin'], function(Router $api) {
-        $api->post('character/upload', 'App\\Api\\V1\\Controllers\\AdminController@upload');
+        $api->post('character/upload', 'App\\Api\\V1\\Controllers\\AdminController@createCharacter');
+        $api->put('character/{id}', 'App\\Api\\V1\\Controllers\\AdminController@updateCharacter');
         $api->post('show', 'App\\Api\\V1\\Controllers\\AdminController@createShow');
+        $api->put('show/{id}', 'App\\Api\\V1\\Controllers\\AdminController@updateShow');
     });
 
     $api->group(['middleware' => 'jwt.auth'], function(Router $api) {
@@ -40,10 +42,13 @@ $api->version('v1', function (Router $api) {
         ]);
     });
 
-    $api->get('shows/{name}', 'App\\Api\\V1\\Controllers\\ShowController@get');
+    $api->get('shows', 'App\\Api\\V1\\Controllers\\ShowController@get');
+    $api->get('shows/{name}', 'App\\Api\\V1\\Controllers\\ShowController@getShowByName');
+    $api->get('shows/id/{id}', 'App\\Api\\V1\\Controllers\\ShowController@getShowById');
     $api->get('characters', 'App\\Api\\V1\\Controllers\\CharacterController@get');
-    $api->get('character/{name}', 'App\\Api\\V1\\Controllers\\CharacterController@getCharacterByName');
-    $api->get('character/{show}/{character}', 'App\\Api\\V1\\Controllers\\CharacterController@getCharacterByShow');
+    $api->get('characters/{name}', 'App\\Api\\V1\\Controllers\\CharacterController@getCharacterByName');
+    $api->get('characters/id/{id}', 'App\\Api\\V1\\Controllers\\CharacterController@getCharacterById');
+    $api->get('characters/{show}/{character}', 'App\\Api\\V1\\Controllers\\CharacterController@getCharacterByShow');
 
     $api->get('hello', function() {
         return response()->json([

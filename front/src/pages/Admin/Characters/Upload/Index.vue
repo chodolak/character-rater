@@ -5,7 +5,7 @@
         Character
       </span>
       <div slot="body">
-        <form ref="characterForm" novalidate @submit.prevent="upload()">
+        <form ref="characterForm" novalidate @submit.prevent="handleCharacterSubmit()">
           <div class="form-group">
             <div class="input-group">
               <input
@@ -112,15 +112,41 @@
         },
         uploadingCharacter: false,
         shows: [],
+        existingCharacter: false,
+        existingCharacterId: null,
+        originalImage: false,
       };
+    },
+
+    created() {
+      if (this.$route.params.id) {
+        this.existingCharacterId = this.$route.params.id;
+        this.getCharacter(this.$route.params.id);
+        this.existingCharacter = true;
+        this.originalImage = true;
+      }
     },
 
     /**
      * The methods the page can use.
      */
     methods: {
+
+      getCharacter(id) {
+        new CharacterProxy().getById(id).then((response) => {
+          this.character.image = process.env.API_LOCATION.replace('/api', '') + response.image;
+          this.character.name = response.name;
+          this.character.bio = response.bio;
+          this.character.show = { value: response.show.id,
+            label: response.show.name };
+          const file = response.image.replace('/images/characters/', '');
+          this.character.fileName = file.replace(/\.[^/.]+$/, '');
+        });
+      },
+
       onFileChange(e) {
         const files = e.target.files || e.dataTransfer.files;
+        this.originalImage = false;
         if (!files.length) {
           return;
         }
@@ -136,23 +162,44 @@
         reader.readAsDataURL(file);
       },
 
-      upload() {
+      handleCharacterSubmit() {
+        if (this.existingCharacter) {
+          this.update();
+        } else {
+          this.create();
+        }
+      },
+
+      create() {
         this.$validator.validateAll().then((result) => {
           if (result) {
             this.uploadingCharacter = true;
             new CharacterProxy().upload(this.character).then(() => {
-              this.showSuccessMsg();
+              this.showCreatedSuccessMsg();
               this.uploadingCharacter = false;
               this.resetCharacterVariables();
             })
             .catch(() => {
               this.uploadingCharacter = false;
-              this.showErrorMsg();
+              this.showCreatedErrorMsg();
             })
             .then(() => {
               this.errors.clear();
             });
           }
+        });
+      },
+
+      update() {
+        this.uploadingCharacter = true;
+        new CharacterProxy().update(this.existingCharacterId, this.character, this.originalImage)
+        .then(() => {
+          this.showUpdatedSuccessMsg();
+          this.uploadingCharacter = false;
+        })
+        .catch(() => {
+          this.uploadingCharacter = false;
+          this.showUpdatedErrorMsg();
         });
       },
 
@@ -167,7 +214,7 @@
 
       getShows: debounce(function (search, loading) {
         loading(true);
-        new ShowProxy().get(search).then((response) => {
+        new ShowProxy().getByName(search).then((response) => {
           const options = [];
           response.forEach((value) => {
             options.push({ value: value.id, label: value.name });
@@ -179,15 +226,20 @@
     },
 
     notifications: {
-      showSuccessMsg: {
+      showCreatedSuccessMsg: {
         type: VueNotifications.types.success,
         title: 'Success!',
         message: 'Uploaded character',
       },
-      showErrorMsg: {
+      showUpdatedSuccessMsg: {
+        type: VueNotifications.types.success,
+        title: 'Success!',
+        message: 'Updated character',
+      },
+      showUpdatedErrorMsg: {
         type: VueNotifications.types.error,
         title: 'Error!',
-        message: 'Failed to upload character',
+        message: 'Failed to update character',
       },
     },
 

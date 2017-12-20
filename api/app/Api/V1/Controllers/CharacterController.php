@@ -21,7 +21,13 @@ class CharacterController extends Controller
         if($show) {
             $char->where('show_id', '=', $show);
         }
-        return response()->json($char->paginate(20));
+        return response()->json($char->paginate(10));
+    }
+
+    public function getCharacterById($id)
+    {
+        $char = Characters::with('show')->where('id', '=', $id)->get();
+        return response()->json($char[0]);
     }
 
     public function getCharacterByName($name)

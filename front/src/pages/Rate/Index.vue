@@ -5,7 +5,7 @@
       <img class="card-img-top center-block"  v-if="character.image" :src="character.image" alt="Card image cap">
       <div class="card-body">
         <h2 class="card-title text-center">{{character.name}}</h2>
-        <div class="center-block">
+        <div class="custom-center">
           <fa-rating :glyph="rating.star" :active-color="rating.activeColor" :inactive-color="rating.inactiveColor" :increment="rating.increment" :show-rating="false" v-model="rating.value"></fa-rating>
         </div>
       </div>
