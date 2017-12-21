@@ -48,7 +48,7 @@
         </ul>
         <span class="navbar-text" v-if="$store.state.auth.authenticated">
           <a
-            class="btn btn-light"
+            class="btn btn-dark login-nav"
             href="#"
             @click.prevent="logout"
           >
@@ -66,7 +66,7 @@
         </span>
       </div>
     </nav>
-
+    <slot name="outside"></slot>
     <div class="container pt-4">
       <div class="row">
         <div class="col col-12">

@@ -1,6 +1,10 @@
 <template>
   <v-layout>
-    <div class="card" style="height:650px;" v-if="!character.name"></div>
+    <div class="card row justify-content-center align-self-center" style="height:650px;" v-if="!character.name">
+      <div class="custom-center">
+        <!-- <i class="fa fa-spinner fa-spin fa-5x"></i> -->
+      </div>
+    </div>
     <div class="card" v-if="character.name">
       <img class="card-img-top center-block"  v-if="character.image" :src="character.image" alt="Card image cap">
       <div class="card-body">

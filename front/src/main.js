@@ -13,7 +13,6 @@ import Vue from 'vue';
 *
 * Import and bootstrap the plugins.
 */
-
 import VTooltip from 'v-tooltip';
 import VueNotifications from 'vue-notifications';
 import VeeValidate from 'vee-validate';
