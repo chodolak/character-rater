@@ -14,7 +14,8 @@
       <div class="card">
         <div class="row">
           <div class="col-md-6">
-            <div class="card-img-bottom side-card-image" :style="{ 'background-image': 'url(' + show.image + ')' }">
+            <div class="card-img-bottom side-card-image">
+              <progressive-background :src="show.image" />
             </div>
           </div>
           <div class="col-md-6">
@@ -67,22 +68,22 @@
       };
     },
 
-    created() {
-      this.getShows();
+    beforeRouteEnter(to, from, next) {
+      new ShowProxy().get(1, {})
+        .then((response) => {
+          response.data.forEach((value) => {
+            value.image = process.env.API_LOCATION.replace('/api', '') + value.image;
+          });
+          next(vm => vm.setShows(response));
+        });
     },
 
     /**
      * The methods the page can use.
      */
     methods: {
-      getShows() {
-        new ShowProxy().get(1, {})
-          .then((response) => {
-            response.data.forEach((value) => {
-              value.image = process.env.API_LOCATION.replace('/api', '') + value.image;
-            });
-            this.shows = response.data;
-          });
+      setShows(info) {
+        this.shows = info.data;
       },
     },
 

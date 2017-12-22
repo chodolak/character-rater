@@ -72,10 +72,10 @@
 
 <script>
   /* ============
-   * Admin Character Index Page
+   * Admin Show Upload Index Page
    * ============
    *
-   * The admin character index page.
+   * The admin show upload index page.
    */
   import VueNotifications from 'vue-notifications';
   import VLayout from '@/layouts/Admin';
@@ -88,6 +88,9 @@
      */
     name: 'admin-shows-upload-index',
 
+    /**
+     * Variables
+     */
     data() {
       return {
         show: {
@@ -103,12 +106,16 @@
       };
     },
 
-    created() {
-      if (this.$route.params.id) {
-        this.existingShowId = this.$route.params.id;
-        this.getShow(this.$route.params.id);
-        this.existingShow = true;
-        this.originalImage = true;
+    /**
+     * Before the route is entered call endpoint to setup page
+     */
+    beforeRouteEnter(to, from, next) {
+      if (to.params.id) {
+        new ShowProxy().getById(to.params.id).then((response) => {
+          next(vm => vm.setUpShow(response));
+        });
+      } else {
+        next();
       }
     },
 
@@ -116,17 +123,22 @@
      * The methods the page can use.
      */
     methods: {
-
-      getShow(id) {
-        new ShowProxy().getById(id).then((response) => {
-          this.show.image = process.env.API_LOCATION.replace('/api', '') + response.image;
-          this.show.name = response.name;
-          this.show.bio = response.bio;
-          const file = response.image.replace('/images/shows/', '');
-          this.show.fileName = file.replace(/\.[^/.]+$/, '');
-        });
+      /**
+       * After route enter setup all the variables
+       */
+      setUpShow(info) {
+        this.existingShow = true;
+        this.existingShowId = info.id;
+        this.originalImage = true;
+        this.show.image = process.env.API_LOCATION.replace('/api', '') + info.image;
+        this.show.name = info.name;
+        this.show.bio = info.bio;
+        const file = info.image.replace('/images/shows/', '');
+        this.show.fileName = file.replace(/\.[^/.]+$/, '');
       },
-
+      /**
+       * On file input change create image
+       */
       onFileChange(e) {
         const files = e.target.files || e.dataTransfer.files;
         this.originalImage = false;
@@ -135,7 +147,9 @@
         }
         this.createImage(files[0]);
       },
-
+      /**
+       * Creates image
+       */
       createImage(file) {
         const reader = new FileReader();
         const vm = this;
@@ -144,7 +158,9 @@
         };
         reader.readAsDataURL(file);
       },
-
+      /**
+       * On submit either update or create a show
+       */
       handleShowSubmit() {
         if (this.existingShow) {
           this.update();
@@ -152,7 +168,9 @@
           this.create();
         }
       },
-
+      /**
+       * Sends request to create a show
+       */
       create() {
         this.$validator.validateAll().then((result) => {
           if (result) {
@@ -172,7 +190,9 @@
           }
         });
       },
-
+      /**
+       * Sends request to update a show
+       */
       update() {
         this.uploadingShow = true;
         new ShowProxy().update(this.existingShowId, this.show, this.originalImage).then(() => {
@@ -184,7 +204,9 @@
           this.showUpdateErrorMsg();
         });
       },
-
+      /**
+       * Reset variables after creating a show
+       */
       resetShowVariables() {
         this.show.image = '';
         this.show.name = null;
@@ -194,6 +216,9 @@
       },
     },
 
+    /**
+     * Notifications
+     */
     notifications: {
       showSuccessCreateMsg: {
         type: VueNotifications.types.success,

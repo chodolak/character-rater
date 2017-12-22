@@ -79,7 +79,6 @@
    *
    * The admin shows index page.
    */
-  import VueNotifications from 'vue-notifications';
   import VLayout from '@/layouts/Admin';
   import ShowProxy from '@/proxies/ShowProxy';
   import debounce from 'debounce';
@@ -91,6 +90,9 @@
      */
     name: 'admin-shows-index',
 
+    /**
+     * Variables
+     */
     data() {
       return {
         shows: [],
@@ -102,33 +104,64 @@
       };
     },
 
-    created() {
-      if (this.$route.query.p) {
-        this.page = this.$route.query.p;
+    /**
+     * Before the route is entered call endpoint to setup page
+     */
+    beforeRouteEnter(to, from, next) {
+      const searchParams = {};
+      let page = 1;
+      if (to.query.name) {
+        searchParams.name = to.query.name;
       }
-      if (this.$route.query.name) {
-        this.searchParams.name = this.$route.query.name;
+      if (to.query.p) {
+        page = to.query.p;
       }
-      this.getShows(1);
+      new ShowProxy().get(page, searchParams).then((response) => {
+        next(vm => vm.setUpShows(to.query, response));
+      });
     },
 
     /**
      * The methods the page can use.
      */
     methods: {
-      getShows(page) {
-        new ShowProxy().get(page, this.searchParams)
-          .then((response) => {
-            this.shows = response.data;
-            this.page = response.current_page - 1;
-            this.totalPages = response.last_page;
-            this.setUpQuery();
-          });
+      /**
+       * After the route enters setup all the variables
+       */
+      setUpShows(query, info) {
+        if (query.p) {
+          this.page = query.p;
+        }
+        if (query.name) {
+          this.searchParams.name = query.name;
+        }
+
+        this.shows = info.data;
+        this.page = info.current_page - 1;
+        this.totalPages = info.last_page;
+        this.setUpQuery();
       },
+      /**
+       * Grabs shows from endpoint and assigns variables
+       */
+      getShows(page) {
+        new ShowProxy().get(page, this.searchParams).then((response) => {
+          this.shows = response.data;
+          this.page = response.current_page - 1;
+          this.totalPages = response.last_page;
+          this.setUpQuery();
+        });
+      },
+      /**
+       * On page click send a request to get new shows
+       */
       pageClick(page) {
         this.page = page;
-        this.getCharacters(page + 1);
+        this.getShows(page);
       },
+      /**
+       * Sets up the url query so on refresh same info displays
+       */
       setUpQuery() {
         this.query = {};
         if (this.page !== 0) {
@@ -139,23 +172,13 @@
         }
         this.$router.replace({ query: this.query });
       },
+      /**
+       * On name input change after 0.5 seconds of no new info call endpoint
+       */
       search: debounce(function () {
         this.page = 0;
         this.getShows(1);
       }, 500),
-    },
-
-    notifications: {
-      showSuccessMsg: {
-        type: VueNotifications.types.success,
-        title: 'Success!',
-        message: 'Uploaded character',
-      },
-      showErrorMsg: {
-        type: VueNotifications.types.error,
-        title: 'Error!',
-        message: 'Failed to upload character',
-      },
     },
 
     /**

@@ -6,11 +6,17 @@
       </div>
     </div>
     <div class="card" v-if="character.name">
-      <img class="card-img-top center-block"  v-if="character.image" :src="character.image" alt="Card image cap">
+      <!-- <progressive-img src="https://unsplash.it/1920/1080?image=10" /> -->
+      <div class="rate-img-container center-block">
+        <img class="rate-img"  v-if="character.image" :src="character.image" alt="Card image cap" />
+      </div>
       <div class="card-body">
         <h2 class="card-title text-center">{{character.name}}</h2>
         <div class="custom-center">
-          <fa-rating :glyph="rating.star" :active-color="rating.activeColor" :inactive-color="rating.inactiveColor" :increment="rating.increment" :show-rating="false" v-model="rating.value"></fa-rating>
+          <el-rate v-model="rating.value" 
+            :allow-half="true"
+            :colors="['#007bff', '#0860a3', '#043b65']"
+            v-on:change="ratingChange"></el-rate>
         </div>
       </div>
       <ul class="list-group list-group-flush">
@@ -56,7 +62,8 @@
    */
   import VLayout from '@/layouts/Default';
   import CharacterProxy from '@/proxies/CharacterProxy';
-  import { FaRating } from 'vue-rate-it';
+  import VueNotifications from 'vue-notifications';
+  import debounce from 'debounce';
 
   export default {
     /**
@@ -67,13 +74,15 @@
     data() {
       return {
         rating: {
-          activeColor: '#0860A3',
-          inactiveColor: '#ffffff',
-          star: 'M1728 647q0 22-26 48l-363 354 86 500q1 7 1 20 0 21-10.5 35.5t-30.5 14.5q-19 0-40-12l-449-236-449 236q-22 12-40 12-21 0-31.5-14.5t-10.5-35.5q0-6 2-20l86-500-364-354q-25-27-25-48 0-37 56-46l502-73 225-455q19-41 49-41t49 41l225 455 502 73q56 9 56 46z',
-          increment: 0.5,
+          id: null,
           value: null,
+          avg: null,
+          exists: false,
         },
+        first: true,
+        loading: true,
         character: {
+          id: null,
           name: null,
           image: null,
           bio: null,
@@ -81,9 +90,11 @@
         },
       };
     },
-
-    created() {
-      this.setUpCharacter(this.$route);
+    beforeRouteEnter(to, from, next) {
+      new CharacterProxy().getByShowCharacter(to.params.show, to.params.character)
+        .then((response) => {
+          next(vm => vm.setCharacter(response));
+        });
     },
 
     beforeRouteUpdate(to, from, next) {
@@ -100,7 +111,52 @@
           .then((response) => {
             this.character = response;
             this.character.image = process.env.API_LOCATION.replace('/api', '') + response.image;
+            this.rating.value = response.rating;
+            if (response.ratingId) {
+              this.rating.id = response.ratingId;
+              this.rating.exists = true;
+            } else {
+              this.rating.exists = false;
+            }
           });
+      },
+
+      setCharacter(info) {
+        this.character = info;
+        this.character.image = process.env.API_LOCATION.replace('/api', '') + info.image;
+        this.rating.value = info.rating;
+        if (info.rating) {
+          this.rating.id = info.ratingId;
+          this.rating.exists = true;
+        } else {
+          this.rating.exists = false;
+        }
+      },
+      ratingChange: debounce(function () {
+        if (this.rating.exists) {
+          new CharacterProxy().updateRating(this.rating.id, { rating: this.rating.value }).then(() => {
+            this.ratingUpdatedSuccessMsg();
+          });
+        } else {
+          new CharacterProxy().createRating({ character: this.character.id, rating: this.rating.value }).then((response) => {
+            this.rating.exists = true;
+            this.rating.id = response.id;
+            this.ratingCreatedSuccessMsg();
+          });
+        }
+      }, 250),
+    },
+
+    notifications: {
+      ratingCreatedSuccessMsg: {
+        type: VueNotifications.types.success,
+        title: 'Success!',
+        message: 'Created rating',
+      },
+      ratingUpdatedSuccessMsg: {
+        type: VueNotifications.types.success,
+        title: 'Success!',
+        message: 'Updated rating',
       },
     },
 
@@ -109,7 +165,6 @@
      */
     components: {
       VLayout,
-      FaRating,
     },
   };
 </script>

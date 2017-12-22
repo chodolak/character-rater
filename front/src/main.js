@@ -13,6 +13,12 @@ import Vue from 'vue';
 *
 * Import and bootstrap the plugins.
 */
+import VueProgressBar from 'vue-progressbar';
+import {
+  Rate,
+} from 'element-ui';
+import 'element-ui/lib/theme-chalk/index.css';
+import VueProgressiveImage from 'vue-progressive-image';
 import VTooltip from 'v-tooltip';
 import VueNotifications from 'vue-notifications';
 import VeeValidate from 'vee-validate';
@@ -60,14 +66,23 @@ function toast({ title, message, type, timeout }) {
   return iziToast[type]({ title, message, timeout });
 }
 
-const options = {
+const toastOptions = {
   success: toast,
   error: toast,
   info: toast,
   warn: toast,
 };
 
-Vue.use(VueNotifications, options);
+const progressOptions = {
+  color: '#007bff',
+  failedColor: 'red',
+  thickness: '5px',
+};
+
+Vue.use(VueProgressBar, progressOptions);
+Vue.use(Rate);
+Vue.use(VueProgressiveImage);
+Vue.use(VueNotifications, toastOptions);
 Vue.use(VeeValidate);
 Vue.use(VTooltip);
 Vue.config.productionTip = false;

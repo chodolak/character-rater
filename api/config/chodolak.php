@@ -54,7 +54,7 @@ return [
     'character_upload' => [
         'validation_rules' => [
             'name' => 'required',
-            'show' => 'required',
+            'show' => 'required|numeric',
             'image' => 'required',
             'fileName' => 'required',
             'bio' => 'required',
@@ -67,6 +67,19 @@ return [
             'bio' => 'required',
             'image' => 'required',
             'fileName' => 'required',
+        ]
+    ],
+
+    'rating' => [
+        'validation_rules' => [
+            'rating' => 'required|numeric|between:0.5,5.0',
+            'character' => 'required|numeric',
+        ]
+    ],
+
+    'rating_put' => [
+        'validation_rules' => [
+            'rating' => 'required|numeric|between:0.5,5.0',
         ]
     ],
 

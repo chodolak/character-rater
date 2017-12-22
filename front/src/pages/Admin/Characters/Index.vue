@@ -71,7 +71,7 @@
         :pageCount="totalPages"
         :initial-page="page"
         :containerClass="'pagination'"
-        :clickHandler="clickCallback"
+        :clickHandler="pageClick"
         :page-class="'page-item'"
         :page-link-class="'page-link'"
         :prev-class="'page-item'"
@@ -90,7 +90,6 @@
    *
    * The admin character index page.
    */
-  import VueNotifications from 'vue-notifications';
   import VLayout from '@/layouts/Admin';
   import CharacterProxy from '@/proxies/CharacterProxy';
   import ShowProxy from '@/proxies/ShowProxy';
@@ -104,6 +103,9 @@
      */
     name: 'admin-characters-index',
 
+    /**
+     * Variables
+     */
     data() {
       return {
         characters: [],
@@ -121,35 +123,66 @@
       };
     },
 
-    created() {
-      if (this.$route.query.p) {
-        this.page = this.$route.query.p;
+    /**
+     * Before the route is entered call endpoint to setup page
+     */
+    beforeRouteEnter(to, from, next) {
+      const searchParams = {};
+      let page = 1;
+      if (to.query.name) {
+        searchParams.name = to.query.name;
       }
-      if (this.$route.query.name) {
-        this.searchParams.name = this.$route.query.name;
+      if (to.query.show) {
+        searchParams.show = to.query.show;
       }
-      if (this.$route.query.show) {
-        this.firstLoad = true;
-        this.searchParams.show = this.$route.query.show;
+      if (to.query.p) {
+        page = to.query.p;
       }
-      this.getCharacters(1);
+      new CharacterProxy().get(page, searchParams).then((response) => {
+        next(vm => vm.setUpCharacters(to.query, response));
+      });
     },
 
     /**
      * The methods the page can use.
      */
     methods: {
-      getCharacters(page) {
-        new CharacterProxy().get(page, this.searchParams)
-          .then((response) => {
-            this.characters = response.data;
-            this.setUpShows();
-            this.page = response.current_page - 1;
-            this.totalPages = response.last_page;
-            this.setUpQuery();
-            this.$router.replace({ query: this.query });
-          });
+      /**
+       * After the route enters setup all the varaibles
+       */
+      setUpCharacters(query, info) {
+        if (query.p) {
+          this.page = query.p;
+        }
+        if (query.name) {
+          this.searchParams.name = query.name;
+        }
+        if (query.show) {
+          this.firstLoad = true;
+          this.searchParams.show = query.show;
+        }
+
+        this.characters = info.data;
+        this.setUpShows();
+        this.page = info.current_page - 1;
+        this.totalPages = info.last_page;
+        this.setUpQuery();
       },
+      /**
+       * Calls endpoint to get characters
+       */
+      getCharacters(page) {
+        new CharacterProxy().get(page, this.searchParams).then((response) => {
+          this.characters = response.data;
+          this.setUpShows();
+          this.page = response.current_page - 1;
+          this.totalPages = response.last_page;
+          this.setUpQuery();
+        });
+      },
+      /**
+       * Sets up the show dropdown if it is the first time
+       */
       setUpShows() {
         if (this.firstLoad) {
           this.firstLoad = false;
@@ -161,10 +194,16 @@
             label: this.characters[0].show.name };
         }
       },
-      clickCallback(page) {
+      /**
+       * On page click update characters
+       */
+      pageClick(page) {
         this.page = page;
-        this.getCharacters(page + 1);
+        this.getCharacters(page);
       },
+      /**
+       * Sets up the query and updates the url
+       */
       setUpQuery() {
         this.query = {};
         if (this.page !== 0) {
@@ -176,7 +215,11 @@
         if (this.searchParams.show) {
           this.query.show = this.searchParams.show;
         }
+        this.$router.replace({ query: this.query });
       },
+      /**
+       * On show select filter
+       */
       setShow(show) {
         this.page = 0;
         if (show.value !== -1) {
@@ -186,10 +229,16 @@
         }
         this.getCharacters(1);
       },
+      /**
+       * On name search update, send request after 0.5 seconds
+       */
       search: debounce(function () {
         this.page = 0;
         this.getCharacters(1);
       }, 500),
+      /**
+       * On show search, send request after 0.5 seconds
+       */
       getShows: debounce(function (search, loading) {
         loading(true);
         new ShowProxy().getByName(search).then((response) => {
@@ -202,19 +251,6 @@
           loading(false);
         });
       }, 500),
-    },
-
-    notifications: {
-      showSuccessMsg: {
-        type: VueNotifications.types.success,
-        title: 'Success!',
-        message: 'Uploaded character',
-      },
-      showErrorMsg: {
-        type: VueNotifications.types.error,
-        title: 'Error!',
-        message: 'Failed to upload character',
-      },
     },
 
     /**

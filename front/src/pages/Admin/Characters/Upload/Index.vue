@@ -82,10 +82,10 @@
 
 <script>
   /* ============
-   * Admin Character Index Page
+   * Admin Character Upload Index Page
    * ============
    *
-   * The admin character index page.
+   * The admin character upload index page.
    */
   import VueNotifications from 'vue-notifications';
   import debounce from 'debounce';
@@ -101,6 +101,9 @@
      */
     name: 'admin-characters-upload-index',
 
+    /**
+     * Variables
+     */
     data() {
       return {
         character: {
@@ -118,12 +121,16 @@
       };
     },
 
-    created() {
-      if (this.$route.params.id) {
-        this.existingCharacterId = this.$route.params.id;
-        this.getCharacter(this.$route.params.id);
-        this.existingCharacter = true;
-        this.originalImage = true;
+    /**
+     * Before the route is entered call endpoint to setup page
+     */
+    beforeRouteEnter(to, from, next) {
+      if (to.params.id) {
+        new CharacterProxy().getById(to.params.id).then((response) => {
+          next(vm => vm.setUpCharacter(response));
+        });
+      } else {
+        next();
       }
     },
 
@@ -131,19 +138,24 @@
      * The methods the page can use.
      */
     methods: {
-
-      getCharacter(id) {
-        new CharacterProxy().getById(id).then((response) => {
-          this.character.image = process.env.API_LOCATION.replace('/api', '') + response.image;
-          this.character.name = response.name;
-          this.character.bio = response.bio;
-          this.character.show = { value: response.show.id,
-            label: response.show.name };
-          const file = response.image.replace('/images/characters/', '');
-          this.character.fileName = file.replace(/\.[^/.]+$/, '');
-        });
+      /**
+       * Sets up variables if id is in url and after route enter
+       */
+      setUpCharacter(info) {
+        this.existingCharacter = true;
+        this.existingCharacterId = info.id;
+        this.originalImage = true;
+        this.character.image = process.env.API_LOCATION.replace('/api', '') + info.image;
+        this.character.name = info.name;
+        this.character.bio = info.bio;
+        this.character.show = { value: info.show.id,
+          label: info.show.name };
+        const file = info.image.replace('/images/characters/', '');
+        this.character.fileName = file.replace(/\.[^/.]+$/, '');
       },
-
+      /**
+       * On file input change create image
+       */
       onFileChange(e) {
         const files = e.target.files || e.dataTransfer.files;
         this.originalImage = false;
@@ -152,7 +164,9 @@
         }
         this.createImage(files[0]);
       },
-
+      /**
+       * Creates image
+       */
       createImage(file) {
         const reader = new FileReader();
         const vm = this;
@@ -161,7 +175,9 @@
         };
         reader.readAsDataURL(file);
       },
-
+      /**
+       * On character submit either create or update character
+       */
       handleCharacterSubmit() {
         if (this.existingCharacter) {
           this.update();
@@ -169,7 +185,9 @@
           this.create();
         }
       },
-
+      /**
+       * Validates and then sends request to create character
+       */
       create() {
         this.$validator.validateAll().then((result) => {
           if (result) {
@@ -189,7 +207,9 @@
           }
         });
       },
-
+      /**
+       * Sends request to update character
+       */
       update() {
         this.uploadingCharacter = true;
         new CharacterProxy().update(this.existingCharacterId, this.character, this.originalImage)
@@ -202,7 +222,9 @@
           this.showUpdatedErrorMsg();
         });
       },
-
+      /**
+       * After creating a character reset all variables
+       */
       resetCharacterVariables() {
         this.character.image = '';
         this.character.name = null;
@@ -211,7 +233,9 @@
         this.character.fileName = null;
         document.getElementById('character-image').value = '';
       },
-
+      /**
+       * On show dropdown search display shows after 0.5 seconds
+       */
       getShows: debounce(function (search, loading) {
         loading(true);
         new ShowProxy().getByName(search).then((response) => {
@@ -225,6 +249,9 @@
       }, 500),
     },
 
+    /**
+     * Notifications
+     */
     notifications: {
       showCreatedSuccessMsg: {
         type: VueNotifications.types.success,

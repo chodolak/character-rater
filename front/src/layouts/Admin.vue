@@ -48,7 +48,7 @@
         </ul>
         <span class="navbar-text" v-if="$store.state.auth.authenticated">
           <a
-            class="btn btn-light"
+            class="btn btn-dark login-nav"
             href="#"
             @click.prevent="logout"
           >

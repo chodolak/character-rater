@@ -26,6 +26,7 @@ module.exports = {
   'rules': {
     'no-param-reassign': 0,
     'no-multi-assign': 0,
+    'max-len': 0,
 
     // don't require .vue extension when importing
     'import/extensions': ['error', 'always', {

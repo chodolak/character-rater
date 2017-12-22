@@ -50,6 +50,9 @@ $api->version('v1', function (Router $api) {
     $api->get('characters/id/{id}', 'App\\Api\\V1\\Controllers\\CharacterController@getCharacterById');
     $api->get('characters/{show}/{character}', 'App\\Api\\V1\\Controllers\\CharacterController@getCharacterByShow');
 
+    $api->post('rate', 'App\\Api\\V1\\Controllers\\RateController@createRating');
+    $api->put('rate/{id}', 'App\\Api\\V1\\Controllers\\RateController@updateRating');
+    
     $api->get('hello', function() {
         return response()->json([
             'message' => 'This is a simple example of item returned by your APIs. Everyone can see it.'

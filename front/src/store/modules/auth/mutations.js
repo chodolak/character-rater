@@ -23,7 +23,7 @@ export default {
     state.authenticated = !!localStorage.getItem('id_token');
     state.admin = !!localStorage.getItem('admin');
     if (state.authenticated) {
-      Vue.$http.defaults.headers.common.Authorization = `Bearer ${localStorage.getItem('id_token')}`;
+      Vue.http.defaults.headers.common.Authorization = `Bearer ${localStorage.getItem('id_token')}`;
     }
   },
 
@@ -41,7 +41,7 @@ export default {
       state.admin = false;
     }
     localStorage.setItem('id_token', params.token);
-    Vue.$http.defaults.headers.common.Authorization = `Bearer ${params.token}`;
+    Vue.http.defaults.headers.common.Authorization = `Bearer ${params.token}`;
   },
 
   [INVALID_LOGIN](state, bool) {
@@ -59,7 +59,7 @@ export default {
     state.admin = false;
     localStorage.removeItem('id_token');
     localStorage.removeItem('admin');
-    Vue.$http.defaults.headers.common.Authorization = '';
+    Vue.http.defaults.headers.common.Authorization = '';
   },
 
   [LOADING](state, bool) {
@@ -68,8 +68,8 @@ export default {
 
   [REFRESH](state, token) {
     localStorage.removeItem('id_token');
-    Vue.$http.defaults.headers.common.Authorization = '';
+    Vue.http.defaults.headers.common.Authorization = '';
     localStorage.setItem('id_token', token);
-    Vue.$http.defaults.headers.common.Authorization = `Bearer ${token}`;
+    Vue.http.defaults.headers.common.Authorization = `Bearer ${token}`;
   },
 };

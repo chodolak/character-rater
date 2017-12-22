@@ -6,6 +6,8 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 use App\Http\Controllers\Controller;
 use App\Characters;
 use Illuminate\Http\Request;
+use App\Ratings;
+use Auth;
 
 class CharacterController extends Controller
 {   
@@ -93,6 +95,24 @@ class CharacterController extends Controller
         } else {
             $requestedCharacter->next = null;
         }
+
+        $user = Auth::guard()->user();
+        $rating = null;
+        if (!is_null($user)) {
+            $rating = Ratings::where('user_id', '=', $user->id)
+                             ->where('character_id', '=', $requestedCharacter->id)
+                             ->get();
+            if(sizeof($rating) !== 0) {
+                $requestedCharacter->ratingId = $rating[0]->id;
+                $rating = $rating[0]->rating;
+            } else {
+                $rating = null;
+            }
+        }
+
+        $requestedCharacter->rating = $rating;
+        $requestedCharacter->avgRating = Ratings::where('character_id', '=', $requestedCharacter->id)->avg('rating');
+
         return response()->json($requestedCharacter);
     }
 
