@@ -6,7 +6,6 @@
       </div>
     </div>
     <div class="card" v-if="character.name">
-      <!-- <progressive-img src="https://unsplash.it/1920/1080?image=10" /> -->
       <div class="rate-img-container center-block">
         <img class="rate-img"  v-if="character.image" :src="character.image" alt="Card image cap" />
       </div>
@@ -132,7 +131,7 @@
           this.rating.exists = false;
         }
       },
-      ratingChange: debounce(function () {
+      ratingChange: debounce(function ratingChange() {
         if (this.rating.exists) {
           new CharacterProxy().updateRating(this.rating.id, { rating: this.rating.value }).then(() => {
             this.ratingUpdatedSuccessMsg();

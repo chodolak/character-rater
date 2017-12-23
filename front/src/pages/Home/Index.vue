@@ -13,12 +13,11 @@
     <div class="container" v-for="show in shows" v-bind:key="show.id" style="padding-bottom: 15px;">
       <div class="card">
         <div class="row">
-          <div class="col-md-6">
-            <div class="card-img-bottom side-card-image">
-              <progressive-background :src="show.image" />
+          <div class="col-md-4">
+            <div class="card-img-bottom side-card-image" :style="{ 'background-image': 'url(' + show.image + ')' }">
             </div>
           </div>
-          <div class="col-md-6">
+          <div class="col-md-8">
             <div class="card-block">
               <h4 class="card-title">{{show.name}}</h4>
               <p class="card-text">Some text goes here</p>

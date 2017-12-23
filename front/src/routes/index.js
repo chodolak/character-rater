@@ -12,6 +12,12 @@ export default [
     name: 'home.index',
     component: () => import('@/pages/Home/Index'),
   },
+  // Shows
+  {
+    path: '/shows',
+    name: 'shows.index',
+    component: () => import('@/pages/Shows/Index'),
+  },
   // Rate
   {
     path: '/rate/:show/:character',

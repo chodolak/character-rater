@@ -236,7 +236,7 @@
       /**
        * On show dropdown search display shows after 0.5 seconds
        */
-      getShows: debounce(function (search, loading) {
+      getShows: debounce(function getShows(search, loading) {
         loading(true);
         new ShowProxy().getByName(search).then((response) => {
           const options = [];

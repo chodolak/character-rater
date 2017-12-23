@@ -175,7 +175,7 @@
       /**
        * On name input change after 0.5 seconds of no new info call endpoint
        */
-      search: debounce(function () {
+      search: debounce(function search() {
         this.page = 0;
         this.getShows(1);
       }, 500),

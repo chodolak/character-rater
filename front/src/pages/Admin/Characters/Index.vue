@@ -232,14 +232,14 @@
       /**
        * On name search update, send request after 0.5 seconds
        */
-      search: debounce(function () {
+      search: debounce(function search() {
         this.page = 0;
         this.getCharacters(1);
       }, 500),
       /**
        * On show search, send request after 0.5 seconds
        */
-      getShows: debounce(function (search, loading) {
+      getShows: debounce(function getShows(search, loading) {
         loading(true);
         new ShowProxy().getByName(search).then((response) => {
           const options = [];
