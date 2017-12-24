@@ -6,11 +6,12 @@
         <p>You can rate characters, see the ratings of each chatacter, filter by show, and much more!</p>
       </div>
     </div>
-    <div class="custom-center" v-if="shows.length == 0">
-      <!-- <i class="fa fa-spinner fa-spin fa-5x"></i> -->
-    </div>
     <div class="container" v-for="show in shows" v-bind:key="show.id" style="padding-bottom: 15px;">
-      <div class="card show-card">
+      <router-link
+            :to="{ name: 'shows-characters.index', params: { name:  show.nameUrlSafe } }"
+            class="card show-card"
+            tag="div"
+      >
         <div class="row">
           <div class="col-md-4">
             <div class="card-img-bottom side-card-image" :style="{ 'background-image': 'url(' + show.thumbnail + ')' }">
@@ -23,20 +24,8 @@
             </div>
           </div>
         </div>
-      </div>
+      </router-link>
     </div>
-    <!-- <div class="card">
-      
-      <div class="card-body">
-        <div class="media">
-          <img class="mr-3" src="https://i.imgur.com/SS7GYfV.jpg" alt="Generic placeholder image">
-          <div class="media-body">
-            <h5 class="mt-0">Media heading</h5>
-            Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
-          </div>
-        </div>
-      </div>
-    </div> -->
   </v-layout>
 </template>
 

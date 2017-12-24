@@ -17,7 +17,11 @@ class ShowController extends Controller
         } else {
             $shows = new Shows;
         }
-        return response()->json($shows->paginate(10));
+        $shows = $shows->paginate(10);
+        foreach ($shows as $show) {
+            $show->nameUrlSafe = str_replace(' ', '-', strtolower($show->name));
+        }
+        return response()->json($shows);
     }
 
     public function getShowByName($name)

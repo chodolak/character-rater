@@ -51,6 +51,17 @@ class CharacterProxy extends Proxy {
     return this.submit('get', `${this.endpoint}/characters/${show}/${character}`);
   }
 
+  getCharactersByShow(show, page, search) {
+    let query = `?page=${page}`;
+    if (search.name) {
+      query += `&name=${search.name}`;
+    }
+    if (search.show) {
+      query += `&show=${search.show}`;
+    }
+    return this.submit('get', `${this.endpoint}/characters/show/${show}${query}`);
+  }
+
   update(id, data, orginalImage, orginalThumbnail) {
     const dataObj = { name: data.name,
       bio: data.bio,

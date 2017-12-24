@@ -11,7 +11,7 @@
       </div>
       <div class="card-body">
         <h2 class="card-title text-center">{{character.name}}</h2>
-        <div class="custom-center">
+        <div class="custom-center rate-stars">
           <el-rate v-model="rating.value" 
             :allow-half="true"
             :colors="['#007bff', '#0860a3', '#043b65']"
@@ -25,7 +25,12 @@
         </li>
         <li class="list-group-item">
           <h6>Show</h6>
-          {{character.show}}
+          <router-link
+                :to="{ name: 'shows-characters.index', params: { name:  character.showUrlSafe } }"
+                tag="a"
+          >
+            {{character.show}}
+          </router-link>
         </li>
       </ul>
     </div>

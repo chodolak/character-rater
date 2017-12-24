@@ -43,7 +43,7 @@ class CharacterController extends Controller
     {
         $show = str_replace('-',' ', $show);
         $character = str_replace('-',' ', $character);
-        $requestedCharacter = Characters::join('shows', 'characters.show_id', '=', 'shows.id')
+        $requestedCharacter = Characters::with('avgRating')->join('shows', 'characters.show_id', '=', 'shows.id')
             ->where('characters.name', 'LIKE', $character)
             ->where('shows.name', 'LIKE', $show)
             ->get(array(
@@ -114,6 +114,32 @@ class CharacterController extends Controller
         $requestedCharacter->avgRating = Ratings::where('character_id', '=', $requestedCharacter->id)->avg('rating');
 
         return response()->json($requestedCharacter);
+    }
+
+    public function getCharactersByShow($show, Request $request)
+    {
+        $show = str_replace('-',' ', $show);
+        $characters = Characters::with('avgRating')->join('shows', 'characters.show_id', '=', 'shows.id')
+            ->where('shows.name', 'LIKE', $show);
+
+        $characterName = $request->get('name');
+        if($characterName) {
+            $characters->where('characters.name', 'LIKE', '%'.$characterName.'%');
+        }
+
+        $characters = $characters->paginate(10, array(
+            'characters.id',
+            'characters.name',
+            'characters.bio',
+            'characters.image',
+            'characters.thumbnail',
+            'shows.name as show'
+        ));
+        foreach ($characters as $character) {
+            $character->nameUrlSafe = str_replace(' ', '-', strtolower($character->name));
+            $character->showUrlSafe = str_replace(' ', '-', strtolower($character->show));
+        }
+        return response()->json($characters);
     }
 
 }

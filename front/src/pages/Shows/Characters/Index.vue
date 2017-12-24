@@ -1,7 +1,34 @@
 <template>
   <v-layout>
+    <div class="shows-page-header">
+      <div class="container">
+        <div class="row">
+          <div class="col-3">
+            <h1>Characters</h1>
+          </div>
+          <div class="col-9 show-name-input">
+            <div class="form-group">
+              <div class="input-group">
+                <input
+                  name="name"
+                  type="text"
+                  placeholder="Name"
+                  class="form-control"
+                  v-model="searchParams.name"
+                  @input="search"
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="container" v-for="character in characters" v-bind:key="character.id" style="padding-bottom: 15px;">
-      <div class="card show-card">
+      <router-link
+            :to="{ name: 'rate.index', params: { show: character.showUrlSafe, character: character.nameUrlSafe } }"
+            class="card show-card"
+            tag="div"
+      >
         <div class="row">
           <div class="col-md-4">
             <div class="card-img-bottom side-card-image" :style="{ 'background-image': 'url(' + character.thumbnail + ')' }">
@@ -11,11 +38,39 @@
             <div class="card-block show-block">
               <h4 class="card-title">{{character.name}}</h4>
               <p class="card-text">{{character.bio | truncate(500, '...')}}</p>
+              <div>
+                <!-- <span class="custom-center">Average</span> -->
+                <el-rate
+                  v-model="character.avg_rating[0].value"
+                  disabled
+                  show-score
+                  :colors="['#007bff', '#0860a3', '#043b65']"
+                  :text-color="'#0860a3'"
+                  score-template="{value} points">
+                </el-rate>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </router-link>
     </div>
+    <div class="alert alert-primary" v-if="characters.length == 0">
+      No characters match right now!
+    </div>
+    <nav v-if="characters.length > 0">
+      <paginate 
+        :pageCount="totalPages"
+        :initial-page="page"
+        :containerClass="'pagination'"
+        :clickHandler="pageClick"
+        :page-class="'page-item'"
+        :page-link-class="'page-link'"
+        :prev-class="'page-item'"
+        :prev-link-class="'page-link'"
+        :next-class="'page-item'"
+        :next-link-class="'page-link'">
+      </paginate>
+    </nav>
   </v-layout>
 </template>
 
@@ -28,6 +83,8 @@
    */
   import VLayout from '@/layouts/Default';
   import CharacterProxy from '@/proxies/CharacterProxy';
+  import debounce from 'debounce';
+  import Paginate from 'vuejs-paginate';
 
   export default {
     /**
@@ -42,13 +99,11 @@
         totalPages: 1,
         searchParams: {
           name: '',
-          show: null,
         },
         selectedShow: null,
         searchArray: [],
         query: {},
         shows: [],
-        firstLoad: false,
       };
     },
 
@@ -64,7 +119,7 @@
       if (to.query.p) {
         page = to.query.p;
       }
-      new CharacterProxy().get(page, searchParams).then((response) => {
+      new CharacterProxy().getCharactersByShow(to.params.name, page, searchParams).then((response) => {
         next(vm => vm.setUpCharacters(to.query, response));
       });
     },
@@ -83,20 +138,57 @@
         if (query.name) {
           this.searchParams.name = query.name;
         }
-        if (query.show) {
-          this.firstLoad = true;
-          this.searchParams.show = query.show;
-        }
         info.data.forEach((value) => {
           value.image = process.env.API_LOCATION.replace('/api', '') + value.image;
           value.thumbnail = process.env.API_LOCATION.replace('/api', '') + value.thumbnail;
         });
         this.characters = info.data;
-        // this.setUpShows();
         this.page = info.current_page - 1;
         this.totalPages = info.last_page;
-        // this.setUpQuery();
+        this.setUpQuery();
       },
+      /**
+       * Calls endpoint to get characters
+       */
+      getCharacters(page) {
+        new CharacterProxy().getCharactersByShow(this.$route.params.name, page, this.searchParams).then((response) => {
+          response.data.forEach((value) => {
+            value.image = process.env.API_LOCATION.replace('/api', '') + value.image;
+            value.thumbnail = process.env.API_LOCATION.replace('/api', '') + value.thumbnail;
+          });
+          this.characters = response.data;
+          this.page = response.current_page - 1;
+          this.totalPages = response.last_page;
+          this.setUpQuery();
+        });
+      },
+      /**
+       * Sets up the query and updates the url
+       */
+      setUpQuery() {
+        this.query = {};
+        if (this.page !== 0) {
+          this.query.p = this.page + 1;
+        }
+        if (this.searchParams.name) {
+          this.query.name = this.searchParams.name;
+        }
+        this.$router.replace({ query: this.query });
+      },
+      /**
+       * On page click update characters
+       */
+      pageClick(page) {
+        this.page = page;
+        this.getCharacters(page);
+      },
+      /**
+       * On name search update, send request after 0.5 seconds
+       */
+      search: debounce(function search() {
+        this.page = 0;
+        this.getCharacters(1);
+      }, 500),
     },
 
     /**
@@ -104,6 +196,7 @@
      */
     components: {
       VLayout,
+      Paginate,
     },
   };
 </script>

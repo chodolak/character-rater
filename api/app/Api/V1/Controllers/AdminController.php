@@ -10,6 +10,7 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use App\Api\V1\Requests\CharacterUploadRequest;
 use App\Api\V1\Requests\ShowRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Auth;
 use App\Characters;
 use App\Shows;
@@ -54,7 +55,7 @@ class AdminController extends Controller
         $character->thumbnail = $thumbUrl;
         $character->bio = $request->get('bio');
         $character->save();
-
+        
         return response()->json($character);
     }
 

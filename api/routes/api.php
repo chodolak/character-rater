@@ -51,6 +51,7 @@ $api->version('v1', function (Router $api) {
     $api->get('characters', 'App\\Api\\V1\\Controllers\\CharacterController@get');
     $api->get('characters/{name}', 'App\\Api\\V1\\Controllers\\CharacterController@getCharacterByName');
     $api->get('characters/id/{id}', 'App\\Api\\V1\\Controllers\\CharacterController@getCharacterById');
+    $api->get('characters/show/{show}', 'App\\Api\\V1\\Controllers\\CharacterController@getCharactersByShow');
     $api->get('characters/{show}/{character}', 'App\\Api\\V1\\Controllers\\CharacterController@getCharacterByShow');
 
     $api->post('rate', 'App\\Api\\V1\\Controllers\\RateController@createRating');
