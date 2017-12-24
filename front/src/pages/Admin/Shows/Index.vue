@@ -1,5 +1,6 @@
 <template>
   <v-layout>
+    <v-dialog/>
     <div class="container">
       <div class="row">
         <div class="col-2">
@@ -35,6 +36,7 @@
           <th scope="col">#</th>
           <th scope="col">Name</th>
           <th scope="col"></th>
+          <th scope="col"></th>
         </tr>
       </thead>
       <tbody>
@@ -50,6 +52,13 @@
               >
                 <i class="fa fa-pencil" aria-hidden="true"></i>
               </router-link>
+            </div>
+          </td>
+          <td>
+            <div class="custom-center">
+              <button class="btn custom-red-button" @click="showDeleteDialog(show.id, show.name)">
+                <i class="fa fa-times" aria-hidden="true"></i>
+              </button>
             </div>
           </td>
         </tr>
@@ -171,6 +180,39 @@
           this.query.name = this.searchParams.name;
         }
         this.$router.replace({ query: this.query });
+      },
+      /**
+       * Deletes character and refresh the list
+       */
+      deleteShow(id) {
+        this.$modal.hide('dialog');
+        new ShowProxy().delete(id).then(() => {
+          this.getShows(this.page + 1);
+        });
+      },
+      /**
+       * Shows delete modal
+       */
+      showDeleteDialog(id, name) {
+        this.$modal.show('dialog', {
+          title: 'Delete Show',
+          text: `Are you sure you want to delete ${name}?`,
+          buttons: [
+            {
+              title: 'CANCEL',
+              default: true,
+              handler: () => {
+                this.$modal.hide('dialog');
+              },
+            },
+            {
+              title: '<span class="delete-text">DELETE</span>',
+              handler: () => {
+                this.deleteShow(id);
+              },
+            },
+          ],
+        });
       },
       /**
        * On name input change after 0.5 seconds of no new info call endpoint

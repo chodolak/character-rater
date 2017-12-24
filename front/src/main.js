@@ -13,6 +13,7 @@ import Vue from 'vue';
 *
 * Import and bootstrap the plugins.
 */
+import VueFilter from 'vue-filter';
 import VueProgressBar from 'vue-progressbar';
 import {
   Rate,
@@ -24,6 +25,7 @@ import VueNotifications from 'vue-notifications';
 import VeeValidate from 'vee-validate';
 import iziToast from 'izitoast';
 import 'izitoast/dist/css/iziToast.min.css';
+import VModal from 'vue-js-modal';
 
 import './plugins/vuex';
 import './plugins/axios';
@@ -79,12 +81,14 @@ const progressOptions = {
   thickness: '5px',
 };
 
+Vue.use(VueFilter);
 Vue.use(VueProgressBar, progressOptions);
 Vue.use(Rate);
 Vue.use(VueProgressiveImage);
 Vue.use(VueNotifications, toastOptions);
 Vue.use(VeeValidate);
 Vue.use(VTooltip);
+Vue.use(VModal, { dialog: true });
 Vue.config.productionTip = false;
 
 store.dispatch('auth/check');

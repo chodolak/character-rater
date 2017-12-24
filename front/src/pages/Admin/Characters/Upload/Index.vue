@@ -56,6 +56,7 @@
             </div>
           </div>
           <div class="form-group">
+            <label>Image</label>
             <div class="input-group">
               <input 
                 id="character-image" 
@@ -68,13 +69,45 @@
             </div>
           </div>
           <div class="form-group">
+            <label>Thumbnail</label>
+            <div class="input-group">
+              <input 
+                id="character-thumbnail" 
+                type="file" 
+                v-on:change="onThumbnailFileChange" 
+                class="form-control" 
+                v-validate="'required'"
+                name="thumbnail"
+                :class="{'input': true, 'is-invalid': errors.has('thumbnail') }">
+            </div>
+          </div>
+          <div class="form-group">
             <button class="btn custom-button">
               Submit
               <i v-if="uploadingCharacter" class="fa fa-spinner fa-spin"></i>
             </button>
           </div>
         </form>
-        <img v-if="character.image" :src="character.image" style="width:50%" class="img-responsive center-block">
+        <div class="container">
+          <div class="row">
+            <div class="col-sm">
+              <div class="card" v-if="character.image">
+                <div class="card-body">
+                  <h4 class="card-title custom-center">Image</h4>
+                </div>
+                <img class="card-img-bottom" :src="character.image">
+              </div>
+            </div>
+            <div class="col-sm">
+              <div class="card" v-if="character.thumbnail">
+                <div class="card-body">
+                  <h4 class="card-title custom-center">Thumbnail</h4>
+                </div>
+                <img class="card-img-bottom" :src="character.thumbnail">
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </v-card>
   </v-layout>
@@ -108,6 +141,7 @@
       return {
         character: {
           image: '',
+          thumbnail: '',
           name: null,
           show: null,
           bio: null,
@@ -118,6 +152,7 @@
         existingCharacter: false,
         existingCharacterId: null,
         originalImage: false,
+        originalThumbnail: false,
       };
     },
 
@@ -145,7 +180,9 @@
         this.existingCharacter = true;
         this.existingCharacterId = info.id;
         this.originalImage = true;
+        this.originalThumbnail = true;
         this.character.image = process.env.API_LOCATION.replace('/api', '') + info.image;
+        this.character.thumbnail = process.env.API_LOCATION.replace('/api', '') + info.thumbnail;
         this.character.name = info.name;
         this.character.bio = info.bio;
         this.character.show = { value: info.show.id,
@@ -172,6 +209,28 @@
         const vm = this;
         reader.onload = (e) => {
           vm.character.image = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      },
+      /**
+       * On file input change create image
+       */
+      onThumbnailFileChange(e) {
+        const files = e.target.files || e.dataTransfer.files;
+        this.originalThumbnail = false;
+        if (!files.length) {
+          return;
+        }
+        this.createThumbnailImage(files[0]);
+      },
+      /**
+       * Creates image
+       */
+      createThumbnailImage(file) {
+        const reader = new FileReader();
+        const vm = this;
+        reader.onload = (e) => {
+          vm.character.thumbnail = e.target.result;
         };
         reader.readAsDataURL(file);
       },
@@ -212,7 +271,7 @@
        */
       update() {
         this.uploadingCharacter = true;
-        new CharacterProxy().update(this.existingCharacterId, this.character, this.originalImage)
+        new CharacterProxy().update(this.existingCharacterId, this.character, this.originalImage, this.originalThumbnail)
         .then(() => {
           this.showUpdatedSuccessMsg();
           this.uploadingCharacter = false;
@@ -227,11 +286,13 @@
        */
       resetCharacterVariables() {
         this.character.image = '';
+        this.character.thumbnail = '';
         this.character.name = null;
         this.character.show = null;
         this.character.bio = null;
         this.character.fileName = null;
         document.getElementById('character-image').value = '';
+        document.getElementById('character-thumbnail').value = '';
       },
       /**
        * On show dropdown search display shows after 0.5 seconds

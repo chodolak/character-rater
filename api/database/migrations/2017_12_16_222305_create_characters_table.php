@@ -18,6 +18,7 @@ class CreateCharactersTable extends Migration
             $table->string('name');
             $table->integer('show_id')->unsigned();
             $table->string('image');
+            $table->string('thumbnail');
             $table->text('bio');
             $table->timestamps();
         });

@@ -34,16 +34,24 @@ class ShowProxy extends Proxy {
     return this.submit('post', `${this.endpoint}/admin/show`, data);
   }
 
-  update(id, data, orginalImage) {
+  update(id, data, orginalImage, orginalThumbnail) {
     const dataObj = { name: data.name,
       bio: data.bio,
       fileName: data.fileName,
-      image: data.image };
+      image: data.image,
+      thumbnail: data.thumbnail };
 
     if (orginalImage) {
       delete dataObj.image;
     }
+    if (orginalThumbnail) {
+      delete dataObj.thumbnail;
+    }
     return this.submit('put', `${this.endpoint}/admin/show/${id}`, dataObj);
+  }
+
+  delete(id) {
+    return this.submit('delete', `${this.endpoint}/admin/show/${id}`);
   }
 }
 

@@ -46,6 +46,7 @@
             </div>
           </div>
           <div class="form-group">
+            <label>Image</label>
             <div class="input-group">
               <input 
                 id="show-image" 
@@ -58,13 +59,45 @@
             </div>
           </div>
           <div class="form-group">
+            <label>Thumbnail</label>
+            <div class="input-group">
+              <input 
+                id="show-thumbnail" 
+                type="file" 
+                v-on:change="onThumbnailFileChange" 
+                class="form-control" 
+                v-validate="'required'"
+                name="thumbnail"
+                :class="{'input': true, 'is-invalid': errors.has('thumbnail') }">
+            </div>
+          </div>
+          <div class="form-group">
             <button class="btn custom-button">
               Submit
               <i v-if="uploadingShow" class="fa fa-spinner fa-spin"></i>
             </button>
           </div>
         </form>
-        <img v-if="show.image" :src="show.image" style="width:50%" class="img-responsive center-block">
+        <div class="container">
+          <div class="row">
+            <div class="col-sm">
+              <div class="card" v-if="show.image">
+                <div class="card-body">
+                  <h4 class="card-title custom-center">Image</h4>
+                </div>
+                <img class="card-img-bottom" :src="show.image">
+              </div>
+            </div>
+            <div class="col-sm">
+              <div class="card" v-if="show.thumbnail">
+                <div class="card-body">
+                  <h4 class="card-title custom-center">Thumbnail</h4>
+                </div>
+                <img class="card-img-bottom" :src="show.thumbnail">
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </v-card>
   </v-layout>
@@ -95,6 +128,7 @@
       return {
         show: {
           image: '',
+          thumbnail: '',
           name: null,
           bio: null,
           fileName: null,
@@ -103,6 +137,7 @@
         existingShow: false,
         existingShowId: null,
         originalImage: false,
+        originalThumbnail: false,
       };
     },
 
@@ -131,6 +166,7 @@
         this.existingShowId = info.id;
         this.originalImage = true;
         this.show.image = process.env.API_LOCATION.replace('/api', '') + info.image;
+        this.show.thumbnail = process.env.API_LOCATION.replace('/api', '') + info.thumbnail;
         this.show.name = info.name;
         this.show.bio = info.bio;
         const file = info.image.replace('/images/shows/', '');
@@ -155,6 +191,28 @@
         const vm = this;
         reader.onload = (e) => {
           vm.show.image = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      },
+      /**
+       * On file input change create image
+       */
+      onThumbnailFileChange(e) {
+        const files = e.target.files || e.dataTransfer.files;
+        this.originalThumbnail = false;
+        if (!files.length) {
+          return;
+        }
+        this.createThumbnailImage(files[0]);
+      },
+      /**
+       * Creates image
+       */
+      createThumbnailImage(file) {
+        const reader = new FileReader();
+        const vm = this;
+        reader.onload = (e) => {
+          vm.show.thumbnail = e.target.result;
         };
         reader.readAsDataURL(file);
       },
@@ -209,10 +267,12 @@
        */
       resetShowVariables() {
         this.show.image = '';
+        this.show.thumbnail = '';
         this.show.name = null;
         this.show.bio = null;
         this.show.fileName = null;
         document.getElementById('show-image').value = '';
+        document.getElementById('show-thumbnail').value = '';
       },
     },
 

@@ -18,6 +18,12 @@ export default [
     name: 'shows.index',
     component: () => import('@/pages/Shows/Index'),
   },
+  // Shows
+  {
+    path: '/shows/:name',
+    name: 'shows-characters.index',
+    component: () => import('@/pages/Shows/Characters/Index'),
+  },
   // Rate
   {
     path: '/rate/:show/:character',

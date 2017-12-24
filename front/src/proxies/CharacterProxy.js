@@ -22,7 +22,8 @@ class CharacterProxy extends Proxy {
       bio: data.bio,
       show: data.show.value,
       fileName: data.fileName,
-      image: data.image };
+      image: data.image,
+      thumbnail: data.thumbnail };
 
     return this.submit('post', `${this.endpoint}/admin/character/upload`, dataObj);
   }
@@ -50,15 +51,19 @@ class CharacterProxy extends Proxy {
     return this.submit('get', `${this.endpoint}/characters/${show}/${character}`);
   }
 
-  update(id, data, orginalImage) {
+  update(id, data, orginalImage, orginalThumbnail) {
     const dataObj = { name: data.name,
       bio: data.bio,
       show: data.show,
       fileName: data.fileName,
-      image: data.image };
+      image: data.image,
+      thumbnail: data.thumbnail };
 
     if (orginalImage) {
       delete dataObj.image;
+    }
+    if (orginalThumbnail) {
+      delete dataObj.thumbnail;
     }
     if (dataObj.show) {
       dataObj.show = dataObj.show.value;
@@ -72,6 +77,10 @@ class CharacterProxy extends Proxy {
 
   updateRating(id, data) {
     return this.submit('put', `${this.endpoint}/rate/${id}`, data);
+  }
+
+  delete(id) {
+    return this.submit('delete', `${this.endpoint}/admin/character/${id}`);
   }
 }
 

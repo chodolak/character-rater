@@ -39,12 +39,19 @@ class AdminController extends Controller
         $imageData = $request->get('image');
         $fileName = $request->get('fileName') . '.' . explode('/', explode(':', substr($imageData, 0, strpos($imageData, ';')))[1])[1];
         Image::make($request->get('image'))->save(public_path('images/characters/').$fileName);
+
+        $thumbData = $request->get('thumbnail');
+        $thumbName = $request->get('fileName') . '_thumb.' . explode('/', explode(':', substr($thumbData, 0, strpos($thumbData, ';')))[1])[1];
+        Image::make($request->get('thumbnail'))->save(public_path('images/characters/').$thumbName);
+
         $fileUrl = '/images/characters/'.$fileName;
+        $thumbUrl = '/images/characters/'.$thumbName;
 
         $character = new Characters;
         $character->name = $request->get('name');
         $character->show_id = $request->get('show');
         $character->image = $fileUrl;
+        $character->thumbnail = $thumbUrl;
         $character->bio = $request->get('bio');
         $character->save();
 
@@ -77,9 +84,31 @@ class AdminController extends Controller
             $fileUrl = '/images/characters/'.$request->get('fileName').'.'.$fileExtension;
             $character->image = $fileUrl;
         }
+
+        if (!is_null($request->get('thumbnail')) && !is_null($request->get('fileName'))) {
+            $thumbData = $request->get('thumbnail');
+            $thumbName = $request->get('fileName') . '_thumb.' . explode('/', explode(':', substr($thumbData, 0, strpos($thumbData, ';')))[1])[1];
+            Image::make($request->get('thumbnail'))->save(public_path('images/characters/').$thumbName);
+            $thumbUrl = '/images/characters/'.$thumbName;
+            $character->thumbnail = $thumbUrl;
+        } else if(is_null($request->get('thumbnail')) && !is_null($request->get('fileName'))) {
+            $oldThumbFileName = str_replace('/images/characters/', '', $character->thumbnail);
+            $fileThumbExtension = explode('.', $oldThumbFileName);
+            $fileThumbExtension = end($fileThumbExtension);
+            $thumbUrl = '/images/characters/'.$request->get('fileName').'_thumb.'.$fileThumbExtension;
+            $character->thumbnail = $thumbUrl;
+        }
         $character->save();
 
         return response()->json($character);
+    }
+
+    public function deleteCharacter($id) 
+    {
+        $character = Characters::find($id);
+        $character->delete();
+
+        return response()->json(['status' => 'ok']);
     }
 
     public function createShow(ShowRequest $request) 
@@ -87,12 +116,19 @@ class AdminController extends Controller
         $imageData = $request->get('image');
         $fileName = $request->get('fileName') . '.' . explode('/', explode(':', substr($imageData, 0, strpos($imageData, ';')))[1])[1];
         Image::make($request->get('image'))->save(public_path('images/shows/').$fileName);
+        
+        $thumbData = $request->get('thumbnail');
+        $thumbName = $request->get('fileName') . '_thumb.' . explode('/', explode(':', substr($thumbData, 0, strpos($thumbData, ';')))[1])[1];
+        Image::make($request->get('thumbnail'))->save(public_path('images/shows/').$thumbName);
+
         $fileUrl = '/images/shows/'.$fileName;
+        $thumbUrl = '/images/shows/'.$thumbName;
 
         $show = new Shows;
         $show->name = $request->get('name');
         $show->bio = $request->get('bio');
         $show->image = $fileUrl;
+        $show->thumbnail = $thumbUrl;
         $show->save();
 
         return response()->json($show);
@@ -121,8 +157,30 @@ class AdminController extends Controller
             $fileUrl = '/images/shows/'.$request->get('fileName').'.'.$fileExtension;
             $show->image = $fileUrl;
         }
+
+        if (!is_null($request->get('thumbnail')) && !is_null($request->get('fileName'))) {
+            $thumbData = $request->get('thumbnail');
+            $thumbName = $request->get('fileName') . '_thumb.' . explode('/', explode(':', substr($thumbData, 0, strpos($thumbData, ';')))[1])[1];
+            Image::make($request->get('thumbnail'))->save(public_path('images/shows/').$thumbName);
+            $thumbUrl = '/images/shows/'.$thumbName;
+            $show->thumbnail = $thumbUrl;
+        } else if(is_null($request->get('thumbnail')) && !is_null($request->get('fileName'))) {
+            $oldThumbFileName = str_replace('/images/shows/', '', $character->thumbnail);
+            $fileThumbExtension = explode('.', $oldThumbFileName);
+            $fileThumbExtension = end($fileThumbExtension);
+            $thumbUrl = '/images/shows/'.$request->get('fileName').'_thumb.'.$fileThumbExtension;
+            $show->thumbnail = $thumbUrl;
+        }
         $show->save();
 
         return response()->json($show);
+    }
+
+    public function deleteShow($id) 
+    {
+        $show = Shows::find($id);
+        $show->delete();
+
+        return response()->json(['status' => 'ok']);
     }
 }

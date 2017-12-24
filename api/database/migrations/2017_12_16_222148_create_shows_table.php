@@ -18,6 +18,7 @@ class CreateShowsTable extends Migration
             $table->string('name');
             $table->text('bio');
             $table->string('image');
+            $table->string('thumbnail');
             $table->timestamps();
         });
     }

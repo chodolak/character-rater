@@ -1,5 +1,6 @@
 <template>
   <v-layout>
+    <v-dialog/>
     <div class="container">
       <div class="row">
         <div class="col-2">
@@ -45,6 +46,7 @@
           <th scope="col">Name</th>
           <th scope="col">Show</th>
           <th scope="col"></th>
+          <th scope="col"></th>
         </tr>
       </thead>
       <tbody>
@@ -61,6 +63,13 @@
               >
                 <i class="fa fa-pencil" aria-hidden="true"></i>
               </router-link>
+            </div>
+          </td>
+          <td>
+            <div class="custom-center">
+              <button class="btn custom-red-button" @click="showDeleteDialog(character.id, character.name)">
+                <i class="fa fa-times" aria-hidden="true"></i>
+              </button>
             </div>
           </td>
         </tr>
@@ -228,6 +237,39 @@
           this.searchParams.show = null;
         }
         this.getCharacters(1);
+      },
+      /**
+       * Deletes character and refresh the list
+       */
+      deleteCharacter(id) {
+        this.$modal.hide('dialog');
+        new CharacterProxy().delete(id).then(() => {
+          this.getCharacters(this.page + 1);
+        });
+      },
+      /**
+       * Shows delete modal
+       */
+      showDeleteDialog(id, name) {
+        this.$modal.show('dialog', {
+          title: 'Delete Character',
+          text: `Are you sure you want to delete ${name}?`,
+          buttons: [
+            {
+              title: 'CANCEL',
+              default: true,
+              handler: () => {
+                this.$modal.hide('dialog');
+              },
+            },
+            {
+              title: '<span class="delete-text">DELETE</span>',
+              handler: () => {
+                this.deleteCharacter(id);
+              },
+            },
+          ],
+        });
       },
       /**
        * On name search update, send request after 0.5 seconds

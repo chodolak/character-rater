@@ -4,24 +4,22 @@
       <div class="container">
         <h1 class="display-3">Chodolak Anime</h1>
         <p>You can rate characters, see the ratings of each chatacter, filter by show, and much more!</p>
-        <p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more »</a></p>
       </div>
     </div>
     <div class="custom-center" v-if="shows.length == 0">
       <!-- <i class="fa fa-spinner fa-spin fa-5x"></i> -->
     </div>
     <div class="container" v-for="show in shows" v-bind:key="show.id" style="padding-bottom: 15px;">
-      <div class="card">
+      <div class="card show-card">
         <div class="row">
           <div class="col-md-4">
-            <div class="card-img-bottom side-card-image" :style="{ 'background-image': 'url(' + show.image + ')' }">
+            <div class="card-img-bottom side-card-image" :style="{ 'background-image': 'url(' + show.thumbnail + ')' }">
             </div>
           </div>
           <div class="col-md-8">
-            <div class="card-block">
+            <div class="card-block show-block">
               <h4 class="card-title">{{show.name}}</h4>
-              <p class="card-text">Some text goes here</p>
-              <a href="#" class="btn btn-primary">Read More</a>
+              <p class="card-text">{{show.bio | truncate(500, '...')}}</p>
             </div>
           </div>
         </div>
@@ -63,7 +61,6 @@
     data() {
       return {
         shows: [],
-        backgroundImage: 'https://cdn.discordapp.com/attachments/183215451634008065/393202636502859777/66348983_p0.jpg',
       };
     },
 
@@ -72,6 +69,7 @@
         .then((response) => {
           response.data.forEach((value) => {
             value.image = process.env.API_LOCATION.replace('/api', '') + value.image;
+            value.thumbnail = process.env.API_LOCATION.replace('/api', '') + value.thumbnail;
           });
           next(vm => vm.setShows(response));
         });

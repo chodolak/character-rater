@@ -21,8 +21,11 @@ $api->version('v1', function (Router $api) {
     $api->group(['prefix' => 'admin'], function(Router $api) {
         $api->post('character/upload', 'App\\Api\\V1\\Controllers\\AdminController@createCharacter');
         $api->put('character/{id}', 'App\\Api\\V1\\Controllers\\AdminController@updateCharacter');
+        $api->delete('character/{id}', 'App\\Api\\V1\\Controllers\\AdminController@deleteCharacter');
+
         $api->post('show', 'App\\Api\\V1\\Controllers\\AdminController@createShow');
         $api->put('show/{id}', 'App\\Api\\V1\\Controllers\\AdminController@updateShow');
+        $api->delete('show/{id}', 'App\\Api\\V1\\Controllers\\AdminController@deleteShow');
     });
 
     $api->group(['middleware' => 'jwt.auth'], function(Router $api) {
