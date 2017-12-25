@@ -86,8 +86,8 @@ class CharacterProxy extends Proxy {
     return this.submit('post', `${this.endpoint}/rate`, data);
   }
 
-  updateRating(id, data) {
-    return this.submit('put', `${this.endpoint}/rate/${id}`, data);
+  updateRating(characterId, id, data) {
+    return this.submit('put', `${this.endpoint}/rate/${characterId}/${id}`, data);
   }
 
   delete(id) {

@@ -1,10 +1,17 @@
 <template>
   <v-layout>
+    <div class="media">
+      <img class="align-self-center mr-3" style="width: 35%;" v-if="show.image" :src="show.image">
+      <div class="media-body">
+        <h5 class="mt-0">{{show.name}}</h5>
+        <p>{{show.bio}}</p>
+      </div>
+    </div>
     <div class="shows-page-header">
       <div class="container">
         <div class="row">
           <div class="col-3">
-            <h1>Characters</h1>
+            <h3>Characters</h3>
           </div>
           <div class="col-9 show-name-input">
             <div class="form-group">
@@ -25,7 +32,7 @@
     </div>
     <div class="container" v-for="character in characters" v-bind:key="character.id" style="padding-bottom: 15px;">
       <router-link
-            :to="{ name: 'rate.index', params: { show: character.showUrlSafe, character: character.nameUrlSafe } }"
+            :to="{ name: 'rate.index', params: { show: show.nameUrlSafe, character: character.nameUrlSafe } }"
             class="card show-card"
             tag="div"
       >
@@ -41,7 +48,7 @@
               <div>
                 <!-- <span class="custom-center">Average</span> -->
                 <el-rate
-                  v-model="character.avg_rating[0].value"
+                  v-model="character.average_rating"
                   disabled
                   show-score
                   :colors="['#007bff', '#0860a3', '#043b65']"
@@ -103,7 +110,7 @@
         selectedShow: null,
         searchArray: [],
         query: {},
-        shows: [],
+        show: {},
       };
     },
 
@@ -120,7 +127,7 @@
         page = to.query.p;
       }
       new CharacterProxy().getCharactersByShow(to.params.name, page, searchParams).then((response) => {
-        next(vm => vm.setUpCharacters(to.query, response));
+        next(vm => vm.setUpVariables(to.query, response));
       });
     },
 
@@ -131,20 +138,25 @@
       /**
        * After the route enters setup all the varaibles
        */
-      setUpCharacters(query, info) {
+      setUpVariables(query, info) {
         if (query.p) {
           this.page = query.p;
         }
         if (query.name) {
           this.searchParams.name = query.name;
         }
-        info.data.forEach((value) => {
+        info.characters.data.forEach((value) => {
+          if (!value.average_ratings) {
+            value.average_ratings = 0;
+          }
           value.image = process.env.API_LOCATION.replace('/api', '') + value.image;
           value.thumbnail = process.env.API_LOCATION.replace('/api', '') + value.thumbnail;
         });
-        this.characters = info.data;
-        this.page = info.current_page - 1;
-        this.totalPages = info.last_page;
+        this.characters = info.characters.data;
+        info.show.image = process.env.API_LOCATION.replace('/api', '') + info.show.image;
+        this.show = info.show;
+        this.page = info.characters.current_page - 1;
+        this.totalPages = info.characters.last_page;
         this.setUpQuery();
       },
       /**
@@ -152,13 +164,16 @@
        */
       getCharacters(page) {
         new CharacterProxy().getCharactersByShow(this.$route.params.name, page, this.searchParams).then((response) => {
-          response.data.forEach((value) => {
+          response.characters.data.forEach((value) => {
+            if (!value.average_ratings) {
+              value.average_ratings = 0;
+            }
             value.image = process.env.API_LOCATION.replace('/api', '') + value.image;
             value.thumbnail = process.env.API_LOCATION.replace('/api', '') + value.thumbnail;
           });
-          this.characters = response.data;
-          this.page = response.current_page - 1;
-          this.totalPages = response.last_page;
+          this.characters = response.characters.data;
+          this.page = response.characters.current_page - 1;
+          this.totalPages = response.characters.last_page;
           this.setUpQuery();
         });
       },

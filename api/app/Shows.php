@@ -12,4 +12,9 @@ class Shows extends Model
      * @var string
      */
     protected $table = 'shows';
+
+    public function characters()
+    {
+        return $this->hasMany('App\Characters');
+    }
 }

@@ -5,8 +5,10 @@ namespace App\Api\V1\Controllers;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use App\Http\Controllers\Controller;
 use App\Characters;
+use App\Shows;
 use Illuminate\Http\Request;
-use App\Ratings;
+use willvincent\Rateable\Rating;
+use Illuminate\Support\Facades\DB;
 use Auth;
 
 class CharacterController extends Controller
@@ -43,7 +45,7 @@ class CharacterController extends Controller
     {
         $show = str_replace('-',' ', $show);
         $character = str_replace('-',' ', $character);
-        $requestedCharacter = Characters::with('avgRating')->join('shows', 'characters.show_id', '=', 'shows.id')
+        $requestedCharacter = Characters::join('shows', 'characters.show_id', '=', 'shows.id')
             ->where('characters.name', 'LIKE', $character)
             ->where('shows.name', 'LIKE', $show)
             ->get(array(
@@ -96,50 +98,49 @@ class CharacterController extends Controller
             $requestedCharacter->next = null;
         }
 
+        
+        $requestedCharacter->avgRating = round($requestedCharacter->averageRating(), 2);
         $user = Auth::guard()->user();
-        $rating = null;
-        if (!is_null($user)) {
-            $rating = Ratings::where('user_id', '=', $user->id)
-                             ->where('character_id', '=', $requestedCharacter->id)
-                             ->get();
-            if(sizeof($rating) !== 0) {
-                $requestedCharacter->ratingId = $rating[0]->id;
-                $rating = $rating[0]->rating;
-            } else {
-                $rating = null;
-            }
+        if(!is_null($user)) {
+            $requestedCharacter->rating = Rating::where('user_id', '=', Auth::guard()->user()->id)
+                                                ->where('rateable_type', '=', 'App\Characters')
+                                                ->where('rateable_id', '=', $requestedCharacter->id)
+                                                ->first();
+        } else {
+            $requestedCharacter->rating = null;
         }
-
-        $requestedCharacter->rating = $rating;
-        $requestedCharacter->avgRating = Ratings::where('character_id', '=', $requestedCharacter->id)->avg('rating');
-
         return response()->json($requestedCharacter);
     }
 
     public function getCharactersByShow($show, Request $request)
     {
         $show = str_replace('-',' ', $show);
-        $characters = Characters::with('avgRating')->join('shows', 'characters.show_id', '=', 'shows.id')
-            ->where('shows.name', 'LIKE', $show);
+        $characters = DB::table('characters')
+                        ->select('characters.*')
+                        ->leftJoin('ratings', 'characters.id', '=', 'ratings.rateable_id')
+                        ->addSelect(DB::raw('AVG(ratings.rating) as average_rating'))
+                        ->groupBy('characters.id')
+                        ->join('shows', 'characters.show_id', '=', 'shows.id')
+                        ->where('shows.name', 'LIKE', $show);
 
         $characterName = $request->get('name');
         if($characterName) {
             $characters->where('characters.name', 'LIKE', '%'.$characterName.'%');
         }
-
-        $characters = $characters->paginate(10, array(
-            'characters.id',
-            'characters.name',
-            'characters.bio',
-            'characters.image',
-            'characters.thumbnail',
-            'shows.name as show'
-        ));
+        $sort = $request->get('sort');
+        if($sort == 'highest-avg') {
+            $characters->orderBy('average_rating', 'desc');
+        } else if($sort == 'lowest-avg') {
+            $characters->orderBy('average_rating', 'asc');
+        }
+        $characters = $characters->paginate(10);
         foreach ($characters as $character) {
             $character->nameUrlSafe = str_replace(' ', '-', strtolower($character->name));
-            $character->showUrlSafe = str_replace(' ', '-', strtolower($character->show));
         }
-        return response()->json($characters);
+        $show = Shows::where('name', 'LIKE', '%'.$show.'%')->first();
+        $show->nameUrlSafe = str_replace(' ', '-', strtolower($show->name));
+
+        return response()->json(['characters' => $characters, 'show' => $show]);
     }
 
 }

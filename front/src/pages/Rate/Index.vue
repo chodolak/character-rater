@@ -115,11 +115,12 @@
           .then((response) => {
             this.character = response;
             this.character.image = process.env.API_LOCATION.replace('/api', '') + response.image;
-            this.rating.value = response.rating;
-            if (response.ratingId) {
-              this.rating.id = response.ratingId;
+            if (response.rating) {
+              this.rating.value = response.rating.rating;
+              this.rating.id = response.rating.id;
               this.rating.exists = true;
             } else {
+              this.rating.value = null;
               this.rating.exists = false;
             }
           });
@@ -128,25 +129,29 @@
       setCharacter(info) {
         this.character = info;
         this.character.image = process.env.API_LOCATION.replace('/api', '') + info.image;
-        this.rating.value = info.rating;
         if (info.rating) {
-          this.rating.id = info.ratingId;
+          this.rating.id = info.rating.id;
+          this.rating.value = info.rating.rating;
           this.rating.exists = true;
         } else {
           this.rating.exists = false;
         }
       },
       ratingChange: debounce(function ratingChange() {
-        if (this.rating.exists) {
-          new CharacterProxy().updateRating(this.rating.id, { rating: this.rating.value }).then(() => {
-            this.ratingUpdatedSuccessMsg();
-          });
+        if (this.$store.state.auth.authenticated) {
+          if (this.rating.exists) {
+            new CharacterProxy().updateRating(this.character.id, this.rating.id, { rating: this.rating.value }).then(() => {
+              this.ratingUpdatedSuccessMsg();
+            });
+          } else {
+            new CharacterProxy().createRating({ character: this.character.id, rating: this.rating.value }).then((response) => {
+              this.rating.exists = true;
+              this.rating.id = response.id;
+              this.ratingCreatedSuccessMsg();
+            });
+          }
         } else {
-          new CharacterProxy().createRating({ character: this.character.id, rating: this.rating.value }).then((response) => {
-            this.rating.exists = true;
-            this.rating.id = response.id;
-            this.ratingCreatedSuccessMsg();
-          });
+          console.log('popup to login');
         }
       }, 250),
     },

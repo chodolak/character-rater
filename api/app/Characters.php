@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use willvincent\Rateable\Rateable;
 
 class Characters extends Model
 {
@@ -13,20 +14,10 @@ class Characters extends Model
      */
     protected $table = 'characters';
 
+    use Rateable;
+    
     public function show()
     {
         return $this->hasOne('App\Shows', 'id', 'show_id');
-    }
-
-    public function ratings()
-    {
-        return $this->hasManyThrough('App\Ratings', 'App\Characters', 'id', 'character_id');
-    }
-
-    public function avgRating()
-    {
-        return $this->ratings()
-            ->selectRaw('avg(ratings.rating) as value')
-            ->groupBy('ratings.character_id');
     }
 }

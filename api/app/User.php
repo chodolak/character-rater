@@ -59,4 +59,9 @@ class User extends Authenticatable implements JWTSubject
     {
         return [];
     }
+
+    public function ratings()
+    {
+        return $this->hasManyThrough('App\Ratings', 'id', 'user_id');
+    }
 }

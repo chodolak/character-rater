@@ -169,7 +169,7 @@ return [
         Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
         Dingo\Api\Provider\LaravelServiceProvider::class,
         Barryvdh\Cors\ServiceProvider::class,
-
+        willvincent\Rateable\RateableServiceProvider::class,
         /*
          * Application Service Providers...
          */

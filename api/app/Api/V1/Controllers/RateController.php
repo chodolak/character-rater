@@ -9,7 +9,8 @@ use Tymon\JWTAuth\Exceptions\JWTException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use App\Api\V1\Requests\RatingRequest;
 use App\Api\V1\Requests\RatingPUTRequest;
-use App\Ratings;
+use App\Characters;
+use willvincent\Rateable\Rating;
 use Auth;
 
 class RateController extends Controller
@@ -26,8 +27,9 @@ class RateController extends Controller
 
     public function createRating(RatingRequest $request) 
     {
-        $check = Ratings::where('user_id', '=', Auth::guard()->user()->id)
-                        ->where('character_id', '=', $request->get('character'))
+        $check = Rating::where('user_id', '=', Auth::guard()->user()->id)
+                        ->where('rateable_type', '=', 'App\Characters')
+                        ->where('rateable_id', '=', $request->get('character'))
                         ->get();
 
         if (sizeof($check) !== 0) {
@@ -36,17 +38,27 @@ class RateController extends Controller
                 'message' => 'rating already exists for that character',
             ], 400);
         }
-        $rating = new Ratings;
+        $character = Characters::find($request->get('character'));
+
+        $rating = new Rating;
+        $rating->rating = floor($request->get('rating') * 2) / 2;;
         $rating->user_id = Auth::guard()->user()->id;
-        $rating->rating = floor($request->get('rating') * 2) / 2;
-        $rating->character_id = $request->get('character');
-        $rating->save();
+        $character->ratings()->save($rating);
+
         return response()->json($rating);
     }
 
-    public function updateRating($id, RatingPUTRequest $request) 
+    public function updateRating($characterId, $id, RatingPUTRequest $request) 
     {
-        $rating = Ratings::find($id);
+        $character = Characters::find($characterId);
+        if (is_null ($character)) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'character does not exist',
+            ], 400);
+        }
+
+        $rating = Rating::find($id);
 
         if (is_null ($rating)) {
             return response()->json([
@@ -61,8 +73,9 @@ class RateController extends Controller
                 'message' => 'invalid user',
             ], 400);
         }
+        
         $rating->rating = floor($request->get('rating') * 2) / 2;
-        $rating->save();
+        $character->ratings()->save($rating);
         return response()->json($rating);
     }
 }
