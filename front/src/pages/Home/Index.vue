@@ -57,8 +57,8 @@
     //   new ShowProxy().get(1, {})
     //     .then((response) => {
     //       response.data.forEach((value) => {
-    //         value.image = process.env.API_LOCATION.replace('/api', '') + value.image;
-    //         value.thumbnail = process.env.API_LOCATION.replace('/api', '') + value.thumbnail;
+    //         value.image = process.env.API_LOCATION + value.image;
+    //         value.thumbnail = process.env.API_LOCATION + value.thumbnail;
     //       });
     //       next(vm => vm.setShows(response));
     //     });
@@ -67,8 +67,8 @@
       new ShowProxy().get(1, {})
         .then((response) => {
           response.data.forEach((value) => {
-            value.image = process.env.API_LOCATION.replace('/api', '') + value.image;
-            value.thumbnail = process.env.API_LOCATION.replace('/api', '') + value.thumbnail;
+            value.image = process.env.API_LOCATION + value.image;
+            value.thumbnail = process.env.API_LOCATION + value.thumbnail;
           });
           this.shows = response.data;
         });

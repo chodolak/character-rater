@@ -101,8 +101,8 @@
       new ShowProxy().get(page, searchParams)
         .then((response) => {
           response.data.forEach((value) => {
-            value.image = process.env.API_LOCATION.replace('/api', '') + value.image;
-            value.thumbnail = process.env.API_LOCATION.replace('/api', '') + value.thumbnail;
+            value.image = process.env.API_LOCATION + value.image;
+            value.thumbnail = process.env.API_LOCATION + value.thumbnail;
           });
           next(vm => vm.setShows(to.query, response));
         });
@@ -130,8 +130,8 @@
       getShows(page) {
         new ShowProxy().get(page, this.searchParams).then((response) => {
           response.data.forEach((value) => {
-            value.image = process.env.API_LOCATION.replace('/api', '') + value.image;
-            value.thumbnail = process.env.API_LOCATION.replace('/api', '') + value.thumbnail;
+            value.image = process.env.API_LOCATION + value.image;
+            value.thumbnail = process.env.API_LOCATION + value.thumbnail;
           });
           this.shows = response.data;
           this.page = response.current_page - 1;
