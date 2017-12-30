@@ -146,8 +146,10 @@
           this.searchParams.name = query.name;
         }
         info.characters.data.forEach((value) => {
-          if (!value.average_ratings) {
-            value.average_ratings = 0;
+          if (!value.average_rating) {
+            value.average_rating = 0;
+          } else {
+            value.average_rating = value.average_rating.toFixed(2);
           }
           value.image = process.env.API_LOCATION + value.image;
           value.thumbnail = process.env.API_LOCATION + value.thumbnail;
@@ -165,8 +167,10 @@
       getCharacters(page) {
         new CharacterProxy().getCharactersByShow(this.$route.params.name, page, this.searchParams).then((response) => {
           response.characters.data.forEach((value) => {
-            if (!value.average_ratings) {
-              value.average_ratings = 0;
+            if (!value.average_rating) {
+              value.average_rating = 0;
+            } else {
+              value.average_rating = value.average_rating.toFixed(2);
             }
             value.image = process.env.API_LOCATION + value.image;
             value.thumbnail = process.env.API_LOCATION + value.thumbnail;
