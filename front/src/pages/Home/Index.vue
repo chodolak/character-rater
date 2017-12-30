@@ -53,14 +53,24 @@
       };
     },
 
-    beforeRouteEnter(to, from, next) {
+    // beforeRouteEnter(to, from, next) {
+    //   new ShowProxy().get(1, {})
+    //     .then((response) => {
+    //       response.data.forEach((value) => {
+    //         value.image = process.env.API_LOCATION.replace('/api', '') + value.image;
+    //         value.thumbnail = process.env.API_LOCATION.replace('/api', '') + value.thumbnail;
+    //       });
+    //       next(vm => vm.setShows(response));
+    //     });
+    // },
+    created() {
       new ShowProxy().get(1, {})
         .then((response) => {
           response.data.forEach((value) => {
             value.image = process.env.API_LOCATION.replace('/api', '') + value.image;
             value.thumbnail = process.env.API_LOCATION.replace('/api', '') + value.thumbnail;
           });
-          next(vm => vm.setShows(response));
+          this.shows = response.data;
         });
     },
 
