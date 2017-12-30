@@ -149,11 +149,11 @@
           if (!value.average_ratings) {
             value.average_ratings = 0;
           }
-          value.image = process.env.API_LOCATION.replace('/api', '') + value.image;
-          value.thumbnail = process.env.API_LOCATION.replace('/api', '') + value.thumbnail;
+          value.image = process.env.API_LOCATION + value.image;
+          value.thumbnail = process.env.API_LOCATION + value.thumbnail;
         });
         this.characters = info.characters.data;
-        info.show.image = process.env.API_LOCATION.replace('/api', '') + info.show.image;
+        info.show.image = process.env.API_LOCATION + info.show.image;
         this.show = info.show;
         this.page = info.characters.current_page - 1;
         this.totalPages = info.characters.last_page;
@@ -168,8 +168,8 @@
             if (!value.average_ratings) {
               value.average_ratings = 0;
             }
-            value.image = process.env.API_LOCATION.replace('/api', '') + value.image;
-            value.thumbnail = process.env.API_LOCATION.replace('/api', '') + value.thumbnail;
+            value.image = process.env.API_LOCATION + value.image;
+            value.thumbnail = process.env.API_LOCATION + value.thumbnail;
           });
           this.characters = response.characters.data;
           this.page = response.characters.current_page - 1;

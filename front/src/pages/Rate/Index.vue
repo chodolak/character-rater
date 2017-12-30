@@ -114,7 +114,7 @@
         new CharacterProxy().getByShowCharacter(route.params.show, route.params.character)
           .then((response) => {
             this.character = response;
-            this.character.image = process.env.API_LOCATION.replace('/api', '') + response.image;
+            this.character.image = process.env.API_LOCATION + response.image;
             if (response.rating) {
               this.rating.value = response.rating.rating;
               this.rating.id = response.rating.id;
@@ -128,7 +128,7 @@
 
       setCharacter(info) {
         this.character = info;
-        this.character.image = process.env.API_LOCATION.replace('/api', '') + info.image;
+        this.character.image = process.env.API_LOCATION + info.image;
         if (info.rating) {
           this.rating.id = info.rating.id;
           this.rating.value = info.rating.rating;
