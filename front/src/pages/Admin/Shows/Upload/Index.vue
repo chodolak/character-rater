@@ -165,8 +165,8 @@
         this.existingShow = true;
         this.existingShowId = info.id;
         this.originalImage = true;
-        this.show.image = process.env.API_LOCATION.replace('/api', '') + info.image;
-        this.show.thumbnail = process.env.API_LOCATION.replace('/api', '') + info.thumbnail;
+        this.show.image = process.env.API_LOCATION + info.image;
+        this.show.thumbnail = process.env.API_LOCATION + info.thumbnail;
         this.show.name = info.name;
         this.show.bio = info.bio;
         const file = info.image.replace('/images/shows/', '');

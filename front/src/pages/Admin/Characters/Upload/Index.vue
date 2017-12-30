@@ -181,8 +181,8 @@
         this.existingCharacterId = info.id;
         this.originalImage = true;
         this.originalThumbnail = true;
-        this.character.image = process.env.API_LOCATION.replace('/api', '') + info.image;
-        this.character.thumbnail = process.env.API_LOCATION.replace('/api', '') + info.thumbnail;
+        this.character.image = process.env.API_LOCATION + info.image;
+        this.character.thumbnail = process.env.API_LOCATION + info.thumbnail;
         this.character.name = info.name;
         this.character.bio = info.bio;
         this.character.show = { value: info.show.id,
