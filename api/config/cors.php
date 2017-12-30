@@ -12,7 +12,7 @@ return [
      |
      */
     'supportsCredentials' => true,
-    'allowedOrigins' => ['chodolak.com'],
+    'allowedOrigins' => ['chodolak.com', 'www.chodolak.com'],
     'allowedHeaders' => ['Content-Type', 'X-Requested-With', 'Origin', 'X-Auth-Token', 'Accept', 'Authorization'],
     'allowedMethods' => ['GET', 'POST', 'PUT', 'HEAD', 'OPTIONS', 'DELETE'],
     'exposedHeaders' => [],
