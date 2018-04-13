@@ -28,12 +28,18 @@ class CharacterController extends Controller
         return response()->json($char->paginate(10));
     }
 
+    /**
+     * Get a character by id
+     */
     public function getCharacterById($id)
     {
         $char = Characters::with('show')->where('id', '=', $id)->get();
         return response()->json($char[0]);
     }
 
+    /**
+     * Get a character by name
+     */
     public function getCharacterByName($name)
     {
         $name = str_replace('-',' ',$name);
@@ -41,6 +47,9 @@ class CharacterController extends Controller
         return response()->json($char);
     }
 
+    /**
+     * Get a character by show and character name
+     */
     public function getCharacterByShow($show, $character)
     {
         $show = str_replace('-',' ', $show);
@@ -112,6 +121,9 @@ class CharacterController extends Controller
         return response()->json($requestedCharacter);
     }
 
+    /**
+     * Gets all characters by the show name
+     */
     public function getCharactersByShow($show, Request $request)
     {
         $show = str_replace('-',' ', $show);

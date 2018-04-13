@@ -59,6 +59,9 @@ class AdminController extends Controller
         return response()->json($character);
     }
 
+    /**
+     * Updates a character by id
+     */
     public function updateCharacter($id, Request $request) 
     {
         $character = Characters::find($id);
@@ -104,6 +107,9 @@ class AdminController extends Controller
         return response()->json($character);
     }
 
+    /**
+     * Deletes a character by id
+     */
     public function deleteCharacter($id) 
     {
         $character = Characters::find($id);
@@ -112,6 +118,9 @@ class AdminController extends Controller
         return response()->json(['status' => 'ok']);
     }
 
+    /**
+     * Creates a show
+     */
     public function createShow(ShowRequest $request) 
     {
         $imageData = $request->get('image');
@@ -135,6 +144,9 @@ class AdminController extends Controller
         return response()->json($show);
     }
 
+    /**
+     * Updates a show by id
+     */
     public function updateShow($id, Request $request) 
     {
         $show = Shows::find($id);
@@ -177,6 +189,9 @@ class AdminController extends Controller
         return response()->json($show);
     }
 
+    /**
+     * Deletes a character by id
+     */
     public function deleteShow($id) 
     {
         $show = Shows::find($id);

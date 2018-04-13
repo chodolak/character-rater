@@ -25,6 +25,9 @@ class RateController extends Controller
         $this->middleware('auth:api', []);
     }
 
+    /**
+     * Creates a rating for current user
+     */
     public function createRating(RatingRequest $request) 
     {
         $check = Rating::where('user_id', '=', Auth::guard()->user()->id)
@@ -48,6 +51,9 @@ class RateController extends Controller
         return response()->json($rating);
     }
 
+    /**
+     * Updates a rating by character id
+     */
     public function updateRating($characterId, $id, RatingPUTRequest $request) 
     {
         $character = Characters::find($characterId);

@@ -4,7 +4,7 @@
       class="navbar-brand"
       :to="{ name: 'home.index' }"
     >
-      Chodolak Anime
+      Chodolak Character Rater
     </router-link>
 
     <button

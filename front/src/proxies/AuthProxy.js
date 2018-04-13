@@ -2,7 +2,7 @@ import Proxy from './Proxy';
 
 class AuthProxy extends Proxy {
   /**
-   * The constructor for the ArtistProxy.
+   * The constructor for the AuthProxy.
    *
    * @param {Object} parameters The query parameters.
    */

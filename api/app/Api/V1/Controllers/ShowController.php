@@ -24,12 +24,18 @@ class ShowController extends Controller
         return response()->json($shows);
     }
 
+    /**
+     * Gets a show by name
+     */
     public function getShowByName($name)
     {
         $shows = Shows::where('name', 'LIKE', '%'.$name.'%')->take(10)->get();
         return response()->json($shows);
     }
 
+    /**
+     * Get a show by id
+     */
     public function getShowById($id)
     {
         $show = Shows::where('id', '=', $id)->get();

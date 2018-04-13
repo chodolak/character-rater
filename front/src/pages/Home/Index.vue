@@ -2,7 +2,7 @@
   <v-layout>
     <div slot="outside" class="jumbotron jumbotron-fluid custom-jumbotron">
       <div class="container">
-        <h1 class="display-3">Chodolak Anime</h1>
+        <h1 class="display-3">Chodolak Character Rater</h1>
         <p>You can rate characters, see the ratings of each chatacter, filter by show, and much more!</p>
       </div>
     </div>
@@ -52,17 +52,7 @@
         shows: [],
       };
     },
-
-    // beforeRouteEnter(to, from, next) {
-    //   new ShowProxy().get(1, {})
-    //     .then((response) => {
-    //       response.data.forEach((value) => {
-    //         value.image = process.env.API_LOCATION + value.image;
-    //         value.thumbnail = process.env.API_LOCATION + value.thumbnail;
-    //       });
-    //       next(vm => vm.setShows(response));
-    //     });
-    // },
+    
     created() {
       new ShowProxy().get(1, {})
         .then((response) => {
