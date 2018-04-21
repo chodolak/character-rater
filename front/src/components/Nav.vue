@@ -31,19 +31,6 @@
           </a>
         </router-link>
       </ul>
-      <ul class="navbar-nav">
-        <router-link
-          :to="{ name: 'rate.index', params: { show: 'hunter-x-hunter', character: 'gon-freecss' } }"
-          active-class="active"
-          class="nav-item"
-          tag="li"
-          v-if="$store.state.auth.authenticated"
-        >
-          <a class="nav-link">
-            Rate
-          </a>
-        </router-link>
-      </ul>
       <ul class="navbar-nav mr-auto">
         <router-link
           :to="{ name: 'admin.index' }"

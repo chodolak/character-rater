@@ -52,7 +52,6 @@
         shows: [],
       };
     },
-    
     created() {
       new ShowProxy().get(1, {})
         .then((response) => {

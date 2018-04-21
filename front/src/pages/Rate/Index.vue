@@ -151,7 +151,7 @@
             });
           }
         } else {
-          console.log('popup to login');
+          this.loginRequiredErrorMsg();
         }
       }, 250),
     },
@@ -166,6 +166,11 @@
         type: VueNotifications.types.success,
         title: 'Success!',
         message: 'Updated rating',
+      },
+      loginRequiredErrorMsg: {
+        type: VueNotifications.types.error,
+        title: 'Error!',
+        message: 'You have to be logged in to rate',
       },
     },
 
