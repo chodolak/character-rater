@@ -21,7 +21,8 @@ export const register = ({ commit }, user) => {
 
   const userObj = { name: user.name, email: user.email, password: user.password };
   new AuthProxy().register(userObj).then((response) => {
-    commit(types.LOGIN, response.token, false);
+    const loginParams = { token: response.token, admin: null };
+    commit(types.LOGIN, loginParams);
     Vue.router.push({
       name: 'home.index',
     });
