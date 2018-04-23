@@ -149,7 +149,7 @@
           if (!value.average_rating) {
             value.average_rating = 0;
           } else {
-            value.average_rating = value.average_rating.toFixed(2);
+            value.average_rating = parseFloat(value.average_rating).toFixed(2);
           }
           value.image = process.env.API_LOCATION + value.image;
           value.thumbnail = process.env.API_LOCATION + value.thumbnail;
@@ -170,7 +170,7 @@
             if (!value.average_rating) {
               value.average_rating = 0;
             } else {
-              value.average_rating = value.average_rating.toFixed(2);
+              value.average_rating = parseFloat(value.average_rating).toFixed(2);
             }
             value.image = process.env.API_LOCATION + value.image;
             value.thumbnail = process.env.API_LOCATION + value.thumbnail;
